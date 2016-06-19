@@ -23,23 +23,27 @@ import java.util.List;
  */
 public class ReversiBoard implements Board {
     private final int BOARD_SIZE;
-
+    //The squares of the board
     private Square[][] squares;
 
     public ReversiBoard() {
+        //Load board size from configuration
         ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
+        //Load a board size from the configuration, if no value is available use 8 as default size
+        String sBoardSize = configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8");
+        BOARD_SIZE = Integer.parseInt(sBoardSize);
 
-        String sSize = configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8");
-
-        BOARD_SIZE = Integer.parseInt(sSize);
-
+        //initialize the array
         squares = new Square[BOARD_SIZE][BOARD_SIZE];
 
+        //create all squares as empty squares
         initializeBoard();
+        //set the start position to the board
         setUpStartPosition();
     }
 
     private void initializeBoard() {
+        //itereates over the array and initializes each element with an empty square
         for (int x = 0; x < squares.length; x++) {
             for (int y = 0; y < squares[x].length; y++) {
                 Square square = new Square(x, y, SquareState.EMPTY);
@@ -49,9 +53,11 @@ public class ReversiBoard implements Board {
     }
 
     private void setUpStartPosition() {
+        //calculates the coordinates of the center of the board
         int x = (BOARD_SIZE / 2) - 1;
         int y = (BOARD_SIZE / 2) - 1;
 
+        //set the four center squares of the board to the Reversi start position
         squares[x][y].setSquareState(SquareState.WHITE);
         squares[x][y + 1].setSquareState(SquareState.BLACK);
         squares[x + 1][y].setSquareState(SquareState.BLACK);
@@ -70,16 +76,21 @@ public class ReversiBoard implements Board {
 
     @Override
     public int countDifference(Player player) {
+        //number of own pieces
         int ownPieces = countPieces(player);
+        //number of opponents pieces
         int opponentPieces = countPieces(player.getOpponent());
 
+        //return the difference
         return ownPieces - opponentPieces;
     }
 
     @Override
     public int countPieces(Player player) {
+        //Get the square state of the player
         SquareState squareState = player.getSquareState();
 
+        //count the pieces of the player by iterating over all elements
         int numberOfPieces = 0;
         for (int x = 0; x < squares.length; x++) {
             for (int y = 0; y < squares[x].length; y++) {
@@ -103,23 +114,10 @@ public class ReversiBoard implements Board {
     public boolean hasAnyLegalMoves(Player player) {
         boolean result = false;
 
-        for (int x = 0; x < squares.length; x++) {
-            for (int y = 0; y < squares[x].length; y++) {
-                Square square = squares[x][y];
-                GameMove gameMove = new GameMove(square);
+        //gets all legal moves for a player and then checks if list is not empty
+        List<GameMove> legalMoves = getAllLegalMoves(player);
 
-                if (isMoveLegal(gameMove, player)) {
-                    result = true;
-                    break;
-                }
-            }
-
-            if (result) {
-                break;
-            }
-        }
-
-        return result;
+        return !(legalMoves.isEmpty());
     }
 
     @Override
@@ -157,17 +155,23 @@ public class ReversiBoard implements Board {
     public List<GameMove> getAllLegalMoves(Player player) {
         List<GameMove> legalMoveList = new ArrayList<>();
 
+        //Iterate over all elements of squares and add all valid moves to a list
         for (int x = 0; x < squares.length; x++) {
             for (int y = 0; y < squares[x].length; y++) {
                 Square square = squares[x][y];
 
-                GameMove gameMove = new GameMove(square);
-                if (isMoveLegal(gameMove, player)) {
-                    legalMoveList.add(gameMove);
+                //Only a empty square can be a valid move
+                if (isEmptySquare(square)) {
+                    //Create the GameMove and add it to the list containing the legal moves if the move is valid
+                    GameMove gameMove = new GameMove(square);
+                    if (isMoveLegal(gameMove, player)) {
+                        legalMoveList.add(gameMove);
+                    }
                 }
             }
         }
 
+        //return a list that can not be modified
         return Collections.unmodifiableList(legalMoveList);
     }
 
@@ -175,10 +179,8 @@ public class ReversiBoard implements Board {
     public GamePosition makeMove(GameMove move, Player player) {
         //clone the board
         ReversiBoard newBoard = new ReversiBoard();
-
         Player currentPlayer = player;
-
-        //Set the SquareStates to the new board
+        //clone the SquareStates to the new board
         for (int x = 0; x < newBoard.squares.length; x++) {
             for (int y = 0; y < newBoard.squares[x].length; y++) {
                 newBoard.squares[x][y].setSquareState(squares[x][y].getSquareState());
@@ -345,7 +347,6 @@ public class ReversiBoard implements Board {
         ReversiBoard that = (ReversiBoard) o;
 
         return Arrays.deepEquals(squares, that.squares);
-
     }
 
     @Override
