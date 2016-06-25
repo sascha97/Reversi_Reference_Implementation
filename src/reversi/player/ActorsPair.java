@@ -26,7 +26,7 @@ public class ActorsPair {
     }
 
     public ActorsPair(Actor whitePlayer, Actor blackPlayer) {
-        actors = new EnumMap<Player, Actor>(Player.class);
+        actors = new EnumMap<>(Player.class);
         actors.put(Player.WHITE, whitePlayer);
         actors.put(Player.BLACK, blackPlayer);
     }

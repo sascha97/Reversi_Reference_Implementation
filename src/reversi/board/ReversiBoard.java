@@ -155,23 +155,17 @@ public class ReversiBoard implements Board {
     public List<GameMove> getAllLegalMoves(Player player) {
         List<GameMove> legalMoveList = new ArrayList<>();
 
-        //Iterate over all elements of squares and add all valid moves to a list
         for (int x = 0; x < squares.length; x++) {
             for (int y = 0; y < squares[x].length; y++) {
                 Square square = squares[x][y];
 
-                //Only a empty square can be a valid move
-                if (isEmptySquare(square)) {
-                    //Create the GameMove and add it to the list containing the legal moves if the move is valid
-                    GameMove gameMove = new GameMove(square);
-                    if (isMoveLegal(gameMove, player)) {
-                        legalMoveList.add(gameMove);
-                    }
+                GameMove gameMove = new GameMove(square);
+                if (isMoveLegal(gameMove, player)) {
+                    legalMoveList.add(gameMove);
                 }
             }
         }
 
-        //return a list that can not be modified
         return Collections.unmodifiableList(legalMoveList);
     }
 
@@ -179,8 +173,10 @@ public class ReversiBoard implements Board {
     public GamePosition makeMove(GameMove move, Player player) {
         //clone the board
         ReversiBoard newBoard = new ReversiBoard();
+
         Player currentPlayer = player;
-        //clone the SquareStates to the new board
+
+        //Set the SquareStates to the new board
         for (int x = 0; x < newBoard.squares.length; x++) {
             for (int y = 0; y < newBoard.squares[x].length; y++) {
                 newBoard.squares[x][y].setSquareState(squares[x][y].getSquareState());
@@ -347,6 +343,7 @@ public class ReversiBoard implements Board {
         ReversiBoard that = (ReversiBoard) o;
 
         return Arrays.deepEquals(squares, that.squares);
+
     }
 
     @Override

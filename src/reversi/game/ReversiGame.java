@@ -29,7 +29,6 @@ public class ReversiGame extends Game {
     private List<GamePosition> gamePositionList;
 
     private ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
-    private Player humanPlayer;
 
     public ReversiGame(ActorsPair actorsPair) {
         super(actorsPair);
@@ -55,11 +54,9 @@ public class ReversiGame extends Game {
         if (humanColor.equals("black")) {
             actorsPair.setActor(Player.BLACK, humanActor);
             actorsPair.setActor(Player.WHITE, computerActor);
-            humanPlayer = Player.BLACK;
         } else {
             actorsPair.setActor(Player.WHITE, humanActor);
             actorsPair.setActor(Player.BLACK, computerActor);
-            humanPlayer = Player.WHITE;
         }
 
         startNewGame();
@@ -83,9 +80,7 @@ public class ReversiGame extends Game {
         super.startNewGame();
 
         ReversiBoard reversiBoard = new ReversiBoard();
-        GamePosition startPosition = new GamePosition(reversiBoard, Player.BLACK);
-
-        this.currentGamePosition = startPosition;
+        this.currentGamePosition = new GamePosition(reversiBoard, Player.BLACK);
         gamePositionList.clear();
         gamePositionList.add(this.currentGamePosition);
 

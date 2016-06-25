@@ -38,9 +38,7 @@ public abstract class Game extends Observable {
     public int getNumberOfPieces(Player player) {
         Board board = getGamePosition().getBoard();
 
-        int result = board.countPieces(player);
-
-        return result;
+        return board.countPieces(player);
     }
 
     public boolean hasGameAnyLegalMoves() {
@@ -92,7 +90,6 @@ public abstract class Game extends Observable {
 
     public void takeBackMove() {
         interruptGameAndWaitForFinish();
-        return;
     }
 
     protected final void gameHasChanged() {

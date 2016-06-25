@@ -38,9 +38,7 @@ public final class Square {
         char character = (char) ('A' + this.xPosition);
         int number = yPosition + 1;
 
-        String result = character + "" + number;
-
-        return result;
+        return character + "" + number;
     }
 
     public SquareState getSquareState() {
