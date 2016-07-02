@@ -10,29 +10,56 @@ package reversi.actor;
 import reversi.board.GameMove;
 
 /**
- * Add a description here...
+ * A SearchNode holds a move and its evaluation value, so that any ComputerActor is able to find its best possible move.
+ *
+ * Any SearchNode is immutable but can be negated.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 12. June 2016
  */
-public class SearchNode {
+class SearchNode {
+    //The GameMove that has to be made to get the following evaluation value.
     private final GameMove gameMove;
+    //The evaluation value of the GameMove.
     private final int evaluationValue;
 
-    public SearchNode(GameMove gameMove, int evaluationValue) {
+    /**
+     * Constuctor for any SearchNode, get the GameMove and its corresponding evaluation value and store it in the
+     * immutable object.
+     *
+     * @param gameMove        The GameMove that is evaluated.
+     * @param evaluationValue The corresponding evaluation value of the GameMove.
+     */
+    SearchNode(GameMove gameMove, int evaluationValue) {
+        //Set up the attributes
         this.gameMove = gameMove;
         this.evaluationValue = evaluationValue;
     }
 
-    public GameMove getGameMove() {
+    /**
+     * This method returns the GameMove stored in the object.
+     *
+     * @return The gameMove.
+     */
+    GameMove getGameMove() {
         return gameMove;
     }
 
-    public int getEvaluationValue() {
+    /**
+     * This method gets the corresponding evaluation value of the GameMove
+     *
+     * @return The evaluation value.
+     */
+    int getEvaluationValue() {
         return evaluationValue;
     }
 
-    public SearchNode negated() {
+    /**
+     * This method returns the current SearchNode with an negated evaluation value.
+     *
+     * @return Negated SearchNode
+     */
+    SearchNode negated() {
         return new SearchNode(gameMove, -evaluationValue);
     }
 }

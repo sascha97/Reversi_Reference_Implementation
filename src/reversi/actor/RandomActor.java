@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Add a description here...
+ * This is an Actor with that makes Random moves.
+ *
+ * The Actor is playing automatically so that a human can play against it.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 12. June 2016
@@ -31,17 +33,24 @@ public class RandomActor extends Actor {
         return randomStrategy;
     }
 
+    /*
+     * This Strategy returns a Random move.
+     */
     private final static Strategy randomStrategy = new Strategy() {
         private Random random = new Random();
 
         @Override
         public GameMove move(GamePosition gamePosition) {
+            //Get the current Board and player
             Board board = gamePosition.getBoard();
             Player currentPlayer = gamePosition.getCurrentPlayer();
 
+            //Get all legal moves
             List<GameMove> legalMoves = board.getAllLegalMoves(currentPlayer);
+            //An random number representing one of the elements present in the list
             int r = this.random.nextInt(legalMoves.size());
 
+            //Returns a random possible move.
             return legalMoves.get(r);
         }
     };

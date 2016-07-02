@@ -8,7 +8,9 @@
 package reversi.actor;
 
 /**
- * Add a description here...
+ * This is the base class for any Actor needed in the ReversiGame.
+ *
+ * An Actor is responsible for making a move in the game.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 22. May 2016

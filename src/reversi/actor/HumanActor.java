@@ -11,15 +11,21 @@ import reversi.board.GameMove;
 import reversi.board.GamePosition;
 
 /**
- * Add a description here...
+ * This is the HumanActor of the ReversiGame.
+ *
+ * The HumanActor is dependend on any user input.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 16. May 2016
  */
 
 public class HumanActor extends Actor {
+    //The interface that allows the actor to request its input.
     private HumanActable humanActable;
 
+    /**
+     * The interface that is required so that any HumanActor can request its input.
+     */
     public interface HumanActable {
         void requestUserInput() throws InterruptedException;
 
