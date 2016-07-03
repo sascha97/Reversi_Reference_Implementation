@@ -10,7 +10,7 @@ package reversi.evaluation;
 import reversi.board.GamePosition;
 
 /**
- * Add a description here...
+ * This interface is just responsible for evaluating a GamePosition.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 22. May 2016

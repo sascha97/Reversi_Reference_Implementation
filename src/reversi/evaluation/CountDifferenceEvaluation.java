@@ -10,7 +10,9 @@ package reversi.evaluation;
 import reversi.board.GamePosition;
 
 /**
- * Add a description here...
+ * This Evaluation evaluates the GamePosition based on the difference of pieces. If a player has more pieces than the
+ * opponent the evaluation returns a positive value. If the opponent has more pieces than the player then a negative
+ * value will be returned.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 22. May 2016

@@ -10,7 +10,9 @@ package reversi.evaluation;
 import reversi.board.GamePosition;
 
 /**
- * Add a description here...
+ * This Evaluation evaluates the GamePosition based on the mobility of the players. In this Evaluation it is important
+ * that it is possible to make as many moves as possible in the next move. It is just the number of moves that is
+ * important here.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 22. May 2016
