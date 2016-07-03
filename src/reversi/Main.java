@@ -13,6 +13,8 @@ import reversi.actor.HumanActor;
 import reversi.game.Game;
 import reversi.game.ReversiGame;
 import reversi.player.ActorsPair;
+import reversi.ui.ConsoleGameController;
+import reversi.ui.ConsoleGameView;
 import reversi.ui.GameController;
 import reversi.ui.GameView;
 import reversi.ui.GraphicalGameController;
@@ -32,8 +34,8 @@ public class Main {
         ActorsPair actorsPair = new ActorsPair(actor, humanActor);
 
         Game gameModel = new ReversiGame(actorsPair);
-        GameView view = new GraphicalGameView(gameModel);
-        GameController controller = new GraphicalGameController(gameModel);
+        GameView view = new ConsoleGameView(gameModel);
+        GameController controller = new ConsoleGameController(gameModel);
         view.setGameController(controller);
         controller.setGameView(view);
 

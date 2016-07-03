@@ -13,6 +13,7 @@ import reversi.board.GamePosition;
 import reversi.board.Square;
 import reversi.board.SquareState;
 import reversi.game.Game;
+import reversi.game.ReversiGameConfiguration;
 import reversi.player.Player;
 
 import java.util.List;
@@ -31,6 +32,11 @@ public class ConsoleGameView extends GameView {
     //The input of the user.
     private String userInput;
 
+    //The symbols for displaying a player
+    private final char WHITE_PLAYER;
+    private final char BLACK_PLAYER;
+    private final char EMPTY_PLAYER;
+
     /**
      * Constructor to set up the ConsoleGameView
      *
@@ -38,6 +44,11 @@ public class ConsoleGameView extends GameView {
      */
     public ConsoleGameView(Game gameModel) {
         super(gameModel);
+
+        ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
+        WHITE_PLAYER = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_CHAR, "W").charAt(0);
+        BLACK_PLAYER = configuration.getProperty(ReversiGameConfiguration.PLAYER_BLACK_CHAR, "B").charAt(0);
+        EMPTY_PLAYER = configuration.getProperty(ReversiGameConfiguration.PLAYER_EMTPY_CHAR, "-").charAt(0);
 
         //Start an input thread, only purpose of this input thread is to ask for the user input all the time...
         inputThread();
@@ -181,14 +192,14 @@ public class ConsoleGameView extends GameView {
                 Square square = board.getSquare(x, y);
 
                 //only non empty squares will be printed.
-                String s = "";
+                char s = EMPTY_PLAYER;
                 if (square.getSquareState() == SquareState.BLACK) {
-                    s = "B";
+                    s = BLACK_PLAYER;
                 } else if (square.getSquareState() == SquareState.WHITE) {
-                    s = "W";
+                    s = WHITE_PLAYER;
                 }
 
-                System.out.printf("%-2s", s);
+                System.out.printf("%-2c", s);
             }
             System.out.println();
         }

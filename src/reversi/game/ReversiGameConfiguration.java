@@ -18,7 +18,10 @@ public class ReversiGameConfiguration extends GameConfiguration {
     public static final String BOARD_SIZE = "board.size";
     public static final String HUMAN_PLAYER_COLOR = "human.player.color";
     public static final String PLAYER_WHITE_COLOR = "player.white.color";
+    public static final String PLAYER_WHITE_CHAR = "player.white.char";
     public static final String PLAYER_BLACK_COLOR = "player.black.color";
+    public static final String PLAYER_BLACK_CHAR = "player.black.char";
+    public static final String PLAYER_EMTPY_CHAR = "player.emtpy.char";
     public static final String ALGORITHM_SEARCH_DEPTH = "algorithm.search.depth";
 
     //Singleton design pattern should be applied here
@@ -27,7 +30,7 @@ public class ReversiGameConfiguration extends GameConfiguration {
     /**
      * Constructor that creates the Configuration.
      */
-    public ReversiGameConfiguration() {
+    private ReversiGameConfiguration() {
         //The file name of the properties file
         super("reversi_game.properties");
     }
@@ -35,7 +38,7 @@ public class ReversiGameConfiguration extends GameConfiguration {
     /**
      * This method returns one single instance of the configuration only.
      *
-     * @return
+     * @return Returns the only instance of the configuration
      */
     public static ReversiGameConfiguration getInstance() {
         //If there is no instance created create an instance
