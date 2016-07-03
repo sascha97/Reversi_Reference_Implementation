@@ -31,6 +31,8 @@ public class ReversiGame extends Game {
     //The configuration file of the ReversiGame
     private ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
 
+    private Player humanPlayer;
+
     /**
      * Constructor of the ReversiGame.
      *
@@ -48,8 +50,10 @@ public class ReversiGame extends Game {
         //Set the human player to the right color
         if (humanColor.toLowerCase().contains("black")) {
             actorsPair.setHumanPlayer(Player.BLACK);
+            humanPlayer = Player.BLACK;
         } else {
             actorsPair.setHumanPlayer(Player.WHITE);
+            humanPlayer = Player.WHITE;
         }
 
         startNewGame();
@@ -96,14 +100,20 @@ public class ReversiGame extends Game {
      * This method handles the stuff that has to be done when a move should be taken back.
      * <p>
      * The method does not work properly if the computer has done more than one move
-     * TODO: fix that issue in a later verison
      */
     @Override
     public void onTakeBackMove() {
         //Move can only be taken back if at least two moves have been made
         if (this.gamePositionList.size() > 2) {
-            //Remove the last two game positions from the gamePosition list.
-            this.gamePositionList.remove(gamePositionList.size() - 1); //computer move
+            //Take multiple computer moves back
+            while (gamePositionList.get(gamePositionList.size() - 2).getCurrentPlayer() != humanPlayer) {
+                //Remove computer move
+                gamePositionList.remove(gamePositionList.size() - 1);
+
+                System.out.println("Removed");
+            }
+
+            //Remove the last human move
             this.gamePositionList.remove(gamePositionList.size() - 1); //own move
 
             //Get the position before the last human move has been made.
