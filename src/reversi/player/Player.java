@@ -10,7 +10,7 @@ package reversi.player;
 import reversi.board.SquareState;
 
 /**
- * Add a description here...
+ * An enumeration of all players of the game.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 22. May 2016
@@ -19,16 +19,32 @@ public enum Player {
     BLACK(SquareState.BLACK),
     WHITE(SquareState.WHITE);
 
+    //The SquareState of the player.
     private SquareState squareState;
 
+    /**
+     * Creates a new Player with a given squareState.
+     *
+     * @param squareState The squareState of a player
+     */
     Player(SquareState squareState) {
         this.squareState = squareState;
     }
 
+    /**
+     * This method returns the SquareState of a player.
+     *
+     * @return The squareState of a player.
+     */
     public SquareState getSquareState() {
         return squareState;
     }
 
+    /**
+     * This method returns the opponent of the player.
+     *
+     * @return The opponent of the player.
+     */
     public Player getOpponent() {
         return (this == Player.BLACK) ? Player.WHITE : Player.BLACK;
     }
