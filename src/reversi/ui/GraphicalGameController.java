@@ -12,34 +12,46 @@ import reversi.board.Square;
 import reversi.game.Game;
 
 /**
- * Add a description here...
+ * This is the Controller for a graphical user interface.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 17. May 2016
  */
 public class GraphicalGameController extends GameController {
+    /**
+     * Constructor sets up the controller.
+     *
+     * @param gameModel The gameModel on which the game should be played.
+     */
     public GraphicalGameController(Game gameModel) {
         super(gameModel);
     }
 
-    @Override
-    public void play() {
-        gameModel.play();
-    }
-
+    /**
+     * This method converts the input fro a graphical user interface to a game move.
+     *
+     * @param userInput The input of the user from a graphical user interface.
+     * @return The GameMove that a user entered
+     */
     @Override
     protected GameMove convertInput(String userInput) {
+        //If user input is null it can not be converted to a game move
         if (userInput == null) {
             return null;
         }
+
+        //trim the input
         userInput = userInput.trim().toLowerCase();
 
+        //Get the x and y position from the string
         char cYPos = userInput.charAt(0);
         char cXPos = userInput.charAt(1);
 
+        //Convert to board coordinates
         int yPos = cXPos - '0';
         int xPos = cYPos - '0';
 
+        //Get the square from the board and create a game move
         Square square = gameModel.getGamePosition().getBoard().getSquare(xPos, yPos);
         return new GameMove(square);
     }

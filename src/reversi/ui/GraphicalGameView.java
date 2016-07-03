@@ -40,88 +40,126 @@ import java.util.List;
 import java.util.Observable;
 
 /**
- * Add a description here...
+ * This is an implementation of a GameView for a GraphicalUserInterface
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 17. May 2016
  */
 public class GraphicalGameView extends GameView {
+    //The frame where the board will be displayed
     private JFrame frame;
+    //The panel where the board will be displayed
     private JPanel boardPanel;
+    //The panel where the game information will be displayed
     private JPanel gameInformationPanel;
 
+    //The layout
     private GridBagLayout gridBagLayout;
 
+    //The Squares of the GUI
     private JButton[][] squares;
 
+    //The icon for the players
     private PlayerIcon iconWhitePlayer = new PlayerIcon(Color.YELLOW);
     private PlayerIcon iconBlackPlayer = new PlayerIcon(Color.RED);
 
+    //The labels
     private JLabel labelWhoseTurn;
     private JLabel labelWhitePlayerDisks;
     private JLabel labelBlackPlayerDisks;
 
+    //The board dimensions
     private final int BOARD_WIDTH;
     private final int BOARD_HEIGHT;
+    //the size of an square
     private final Dimension DIMENSION = new Dimension(60, 60);
 
+    //Used for synchronizing the results over two threads...
     private ThreadEvent resultsReady = new ThreadEvent();
+    //The input of the user
     private String userInput;
 
+    /**
+     * Constructor to set up the GraphicalGameView
+     *
+     * @param gameModel The game model which should be displayed.
+     */
     public GraphicalGameView(Game gameModel) {
         super(gameModel);
 
-        ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
+        //Get the dimension of the board from the model.
+        BOARD_WIDTH = gameModel.getGamePosition().getBoard().getBoardWidth();
+        BOARD_HEIGHT = gameModel.getGamePosition().getBoard().getBoardHeight();
 
-        BOARD_WIDTH = Integer.parseInt(config.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8"));
-        BOARD_HEIGHT = Integer.parseInt(config.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8"));
-
+        //Crate the buttons
         squares = new JButton[BOARD_WIDTH][BOARD_HEIGHT];
 
+        //Initialize the panels
         initializeBoardPanel();
         initializeGameInformationPanel();
 
+        //Set the title for the window
         frame = new JFrame(RES.getString("ui.window.title"));
 
+        //Add the components to the window
         JPanel root = new JPanel(new BorderLayout());
         root.add(gameInformationPanel, BorderLayout.LINE_END);
         root.add(boardPanel, BorderLayout.CENTER);
 
+        //Set the coneten pane
         frame.setContentPane(root);
     }
 
+    /**
+     * This method sets up the board panel.
+     */
     private void initializeBoardPanel() {
+        //the layout for the board panel
         gridBagLayout = new GridBagLayout();
+        //set the layout to the panel
         boardPanel = new JPanel(gridBagLayout);
 
+        //The constraints for the layout
         GridBagConstraints constraints = new GridBagConstraints();
 
         //SET VERTICAL NUMBERS
         for (int x = 0; x < BOARD_WIDTH + 2; x += BOARD_WIDTH + 1) {
+            //set the x position of the grid
             constraints.gridx = x;
             for (int y = 0; y < BOARD_HEIGHT; y++) {
+                //set the y position of the grid
                 constraints.gridy = y + 1;
 
+                //Calculate the number of the row
                 int number = 1 + y;
 
+                //Create a new label containing the number of the row
                 JLabel label = new JLabel("" + number, SwingConstants.CENTER);
+                //set the label to the preferred size
                 label.setPreferredSize(DIMENSION);
 
+                //Add the label to the board panel.
                 boardPanel.add(label, constraints);
             }
         }
 
         //SET HORIZONTAL LETTERS
         for (int y = 0; y < BOARD_HEIGHT + 2; y += BOARD_HEIGHT + 1) {
+            //set the y position of the grid
             constraints.gridy = y;
             for (int x = 0; x < BOARD_WIDTH; x++) {
+                //set the x position of the grid
                 constraints.gridx = x + 1;
 
+                //Calculate the letter of the column
                 char letter = (char) ('A' + x);
 
+                //Creatae a new label containing the letter of the row
                 JLabel label = new JLabel("" + letter, SwingConstants.CENTER);
+                //set the label to the preferred size
                 label.setPreferredSize(DIMENSION);
 
+                //Add the label to the board panel
                 boardPanel.add(label, constraints);
             }
         }
@@ -129,79 +167,109 @@ public class GraphicalGameView extends GameView {
         //SET BOARD SQUARES
         for (int x = 1; x <= BOARD_WIDTH; x++) {
             for (int y = 1; y <= BOARD_HEIGHT; y++) {
+                //Set the x and y position on the griud
                 constraints.gridx = x;
                 constraints.gridy = y;
 
+                //create a new button
                 squares[x - 1][y - 1] = new JButton();
+                //save the button on a local variable
                 JButton button = squares[x - 1][y - 1];
+                //set the preferred size and add the action listener on each button
                 button.setPreferredSize(DIMENSION);
                 button.addActionListener(userInputsMove);
+                //set the button disabled so that it can not be clicked
                 button.setEnabled(false);
-                button.setForeground(Color.GREEN);
 
+                //add the button to the board panel
                 boardPanel.add(button, constraints);
             }
         }
 
+        //set the background color on the boad panel
         boardPanel.setBackground(Color.LIGHT_GRAY);
     }
 
+    /**
+     * This method sets uo the game information panel
+     */
     private void initializeGameInformationPanel() {
+        //The color of the game information panel
         Color color = new Color(200, 200, 200);
 
+        //create a new game information panel with a grid bag layout
         gameInformationPanel = new JPanel(new GridBagLayout());
+        //set the background color
         gameInformationPanel.setBackground(color);
+        //The constraints of the grid
         GridBagConstraints constraints = new GridBagConstraints();
 
+        //Set the grid constraings
         constraints.gridy = 0;
         constraints.gridx = 0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
+
+        //Create the game panel with a box layout and set the background color
         JPanel gamePanel = new JPanel();
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
         gamePanel.setBackground(color);
 
+        //create the panel current player, set the background and add a titled boarder
         JPanel currentPlayer = new JPanel();
         currentPlayer.setBackground(color);
         currentPlayer.setBorder(BorderFactory.createTitledBorder(RES.getString("ui.label.current.player")));
 
+        //Init label whose turn and add it to the right panel
         labelWhoseTurn = new JLabel(iconWhitePlayer, SwingConstants.CENTER);
         labelWhoseTurn.setPreferredSize(new Dimension(60, 60));
         currentPlayer.add(labelWhoseTurn);
 
+        //Create a new panel for the player status, set the background color add a titled boarder.
         JPanel panelPlayerStatus = new JPanel(new GridBagLayout());
         panelPlayerStatus.setBackground(color);
+        //Constraints for the player status panel
         GridBagConstraints constraintsPlayer = new GridBagConstraints();
         panelPlayerStatus.setBorder(BorderFactory.createTitledBorder(RES.getString("ui.label.status.player")));
 
+        //Set up the constraints of the player panel
         constraintsPlayer.gridx = 0;
         constraintsPlayer.gridy = 0;
         constraintsPlayer.weightx = 0.4;
         constraintsPlayer.ipady = 10;
+        //Add a new label on the player panel for the white player
         JLabel labelWhitePlayer = new JLabel(iconWhitePlayer, SwingConstants.CENTER);
         labelWhitePlayer.setPreferredSize(new Dimension(60, 60));
         panelPlayerStatus.add(labelWhitePlayer, constraintsPlayer);
 
+        //set the constraints of the player panel
         constraintsPlayer.gridx = 1;
         constraintsPlayer.weightx = 0.6;
+        //Add a new label on the player panel for the white player
         labelWhitePlayerDisks = new JLabel("", SwingConstants.CENTER);
         panelPlayerStatus.add(labelWhitePlayerDisks, constraintsPlayer);
 
+        //Set up the constraints of the player panel for the black player
         constraintsPlayer.gridx = 0;
         constraintsPlayer.gridy = 1;
         constraintsPlayer.weightx = 0.4;
+        //Add a new label on the player panel for the black player
         JLabel labelBlackPlayer = new JLabel(iconBlackPlayer, SwingConstants.CENTER);
         labelWhitePlayer.setPreferredSize(new Dimension(60, 60));
         panelPlayerStatus.add(labelBlackPlayer, constraintsPlayer);
 
+        //set the constraints for the player panel
         constraintsPlayer.gridx = 1;
         constraintsPlayer.weightx = 0.6;
+        //Add a new label on the player panel for the black player
         labelBlackPlayerDisks = new JLabel("", SwingConstants.CENTER);
         panelPlayerStatus.add(labelBlackPlayerDisks, constraintsPlayer);
 
+        //add this to the game panel and then add the game panel to the game information panel
         gamePanel.add(currentPlayer);
         gamePanel.add(panelPlayerStatus);
         gameInformationPanel.add(gamePanel, constraints);
 
+        //Set up the constraints for the grid layout
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.ipady = 25;
@@ -211,107 +279,162 @@ public class GraphicalGameView extends GameView {
         menuPanel.setBorder(BorderFactory.createTitledBorder(RES.getString("ui.label.menu")));
         menuPanel.setBackground(color);
 
+        //Create the 4 control buttons
         JButton buttonResign = new JButton(RES.getString("ui.label.resign"));
-        buttonResign.setEnabled(false);
         JButton buttonTakeBack = new JButton(RES.getString("ui.label.take.back"));
         JButton buttonNewGame = new JButton(RES.getString("ui.label.new.game"));
         JButton buttonExit = new JButton(RES.getString("ui.label.exit"));
 
-        //TODO MOVE OUT HERE
+        //Add the action to the control buttons
         buttonTakeBack.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Disable input even when it would not make any sense
                 disableInput();
-                gameModel.takeBackMove();
+                gameController.handleUserAction(GameController.GameAction.TAKEBACK);
             }
         });
 
-        //TODO MOVE OUT HERE
         buttonNewGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                buttonResign.setEnabled(true);
+                buttonTakeBack.setEnabled(true);
                 disableInput();
-                gameModel.startNewGame();
-                gameModel.play();
+                gameController.handleUserAction(GameController.GameAction.NEW_GAME);
             }
         });
 
-        //TODO: move out here
+        buttonResign.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                disableInput();
+                buttonTakeBack.setEnabled(false);
+                buttonResign.setEnabled(false);
+                gameController.handleUserAction(GameController.GameAction.RESIGN);
+            }
+        });
+
         buttonExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameModel.endGame();
+                gameController.handleUserAction(GameController.GameAction.END_GAME);
                 //Input no longer needed
                 disableInput();
             }
         });
 
+        //Add the control buttons on the menu panel
         menuPanel.add(buttonResign);
         menuPanel.add(buttonTakeBack);
         menuPanel.add(buttonNewGame);
         menuPanel.add(buttonExit);
 
+        //Add the menu panel on the game information panel
         gameInformationPanel.add(menuPanel, constraints);
         gameInformationPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
     }
 
+    /**
+     * This method is called to show the view.
+     */
     @Override
     public void show() {
+        //set frame not resizable
         frame.setResizable(false);
+        //draw the frame
         frame.pack();
+        //frame is closable when the window is closed
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         frame.setLocationByPlatform(true);
 
+        //frame is now visible
         frame.setVisible(true);
 
         super.show();
     }
 
+    /**
+     * This method is used to request any input from the user
+     *
+     * @return The input from the user
+     * @throws InterruptedException If the program is interrupted whilst requesting any user input.
+     */
     @Override
     protected String requestUserInput() throws InterruptedException {
+        //wait for the input
         resultsReady.await();
 
+        //return the input
         return userInput;
     }
 
+    /**
+     * This mehtod is used to display any messages on the console game view
+     *
+     * @param message The message which should be displayed
+     */
     @Override
     protected void displayMessage(String message) {
-        System.out.println(message);
+        //NOT WANTED YET
     }
 
+    /**
+     * This method shows all legal moves on the graphical user interface
+     */
     @Override
     protected void showAllLegalMoves() {
+        //Get the current game position and the current player
         Board board = gameModel.getGamePosition().getBoard();
         Player currentPlayer = gameModel.getGamePosition().getCurrentPlayer();
 
+        //Get all legal moves
         List<GameMove> legalMoves = board.getAllLegalMoves(currentPlayer);
         for (GameMove move : legalMoves) {
+            //Get the square
             Square square = move.getSquare();
+            //Get the x and y position of the square
             int xPos = square.getXPosition();
             int yPos = square.getYPosition();
 
+            //Enable the square
             squares[xPos][yPos].setEnabled(true);
         }
     }
 
+    /**
+     * This method is called when the observed object has changed.
+     *
+     * @param o   The Observable that has changed
+     * @param arg An argument
+     */
     @Override
     public void update(Observable o, Object arg) {
+        //updates the board
         updateBoard();
+        //updates the game information panel
         updateGameInformation();
     }
 
+    /**
+     * This method is responsible for updating the board
+     */
     private void updateBoard() {
+        //Get the current board
         Board board = gameModel.getGamePosition().getBoard();
 
+        //iterate over the board
         for (int x = 0; x < board.getBoardWidth(); x++) {
             for (int y = 0; y < board.getBoardHeight(); y++) {
+                //remove all icons from the square
                 squares[x][y].setIcon(null);
 
+                //get the square from the board
                 Square square = board.getSquare(x, y);
                 SquareState state = square.getSquareState();
 
+                //Add the corresponding icon to the square
                 if (state == SquareState.WHITE) {
                     squares[x][y].setIcon(iconWhitePlayer);
                 } else if (state == SquareState.BLACK) {
@@ -321,25 +444,37 @@ public class GraphicalGameView extends GameView {
         }
     }
 
+    /**
+     * This method is responsible for updating the game information panel
+     */
     private void updateGameInformation() {
+        //Get the current game position
         GamePosition gamePosition = gameModel.getGamePosition();
 
+        //Set the label which displays whose turn it is
         if (gamePosition.getCurrentPlayer() == Player.BLACK) {
             labelWhoseTurn.setIcon(iconBlackPlayer);
         } else {
             labelWhoseTurn.setIcon(iconWhitePlayer);
         }
 
+        //get the internationalized format String for the number of disks
         String format = RES.getString("ui.number.disks");
 
+        //get the number of disks for any player
         int numberWhiteDisks = gamePosition.getBoard().countPieces(Player.WHITE);
         int numberBlackDisks = gamePosition.getBoard().countPieces(Player.BLACK);
 
+        //Update the label
         labelBlackPlayerDisks.setText(String.format(format, numberBlackDisks));
         labelWhitePlayerDisks.setText(String.format(format, numberWhiteDisks));
     }
 
+    /**
+     * This method is used to disalbe al user input from the gui
+     */
     private void disableInput() {
+        //Iterates over all squares and sets disables all enabled squares.
         for (int x = 0; x < BOARD_WIDTH; x++) {
             for (int y = 0; y < BOARD_HEIGHT; y++) {
                 JButton button = squares[x][y];
@@ -350,23 +485,35 @@ public class GraphicalGameView extends GameView {
         }
     }
 
+    /**
+     * The action which should be performed when a square button is clicked
+     */
     private ActionListener userInputsMove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            //Get the button which is clicked
             JButton button = ((JButton) e.getSource());
 
+            //Get the constraints
             GridBagConstraints constraints = gridBagLayout.getConstraints(button);
 
-            int xPos = constraints.gridx - 1; //Weil um 1 Verschoben
-            int yPos = constraints.gridy - 1; //Weil um 1 Verschoben
+            //Calculate the board coordinates from the constraints
+            int xPos = constraints.gridx - 1;
+            int yPos = constraints.gridy - 1;
 
+            //Create the user input String
             userInput = xPos + "" + yPos;
+            //disable input again
             disableInput();
 
+            //notify the waiting thread that user input is done
             resultsReady.signal();
         }
     };
 
+    /**
+     * Private class for displaying the players disks.
+     */
     private static class PlayerIcon implements Icon {
         private Color color;
 
