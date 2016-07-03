@@ -8,13 +8,13 @@
 package reversi.board;
 
 /**
- * Add a description here...
+ * An Enumeration containing all possible Square states.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 22. May 2016
  */
 public enum SquareState {
-    EMPTY,
-    BLACK,
-    WHITE;
+    EMPTY, //The square belongs to no player
+    BLACK, //The square belongs to the black player
+    WHITE //The square belongs to the white player
 }
