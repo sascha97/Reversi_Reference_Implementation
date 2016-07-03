@@ -81,7 +81,7 @@ public class GraphicalGameView extends GameView {
         initializeBoardPanel();
         initializeGameInformationPanel();
 
-        frame = new JFrame("Reversi - Challenge");
+        frame = new JFrame(RES.getString("ui.window.title"));
 
         JPanel root = new JPanel(new BorderLayout());
         root.add(gameInformationPanel, BorderLayout.LINE_END);
@@ -162,7 +162,7 @@ public class GraphicalGameView extends GameView {
 
         JPanel currentPlayer = new JPanel();
         currentPlayer.setBackground(color);
-        currentPlayer.setBorder(BorderFactory.createTitledBorder("Current Player"));
+        currentPlayer.setBorder(BorderFactory.createTitledBorder(RES.getString("ui.label.current.player")));
 
         labelWhoseTurn = new JLabel(iconWhitePlayer, SwingConstants.CENTER);
         labelWhoseTurn.setPreferredSize(new Dimension(60, 60));
@@ -171,7 +171,7 @@ public class GraphicalGameView extends GameView {
         JPanel panelPlayerStatus = new JPanel(new GridBagLayout());
         panelPlayerStatus.setBackground(color);
         GridBagConstraints constraintsPlayer = new GridBagConstraints();
-        panelPlayerStatus.setBorder(BorderFactory.createTitledBorder("Player Status"));
+        panelPlayerStatus.setBorder(BorderFactory.createTitledBorder(RES.getString("ui.label.status.player")));
 
         constraintsPlayer.gridx = 0;
         constraintsPlayer.gridy = 0;
@@ -208,14 +208,14 @@ public class GraphicalGameView extends GameView {
         constraints.ipadx = 40;
         //Everything needed for the GameControl Panel will be put here
         JPanel menuPanel = new JPanel(new GridLayout(2, 2));
-        menuPanel.setBorder(BorderFactory.createTitledBorder("Menu"));
+        menuPanel.setBorder(BorderFactory.createTitledBorder(RES.getString("ui.label.menu")));
         menuPanel.setBackground(color);
 
-        JButton buttonResign = new JButton("Resign");
+        JButton buttonResign = new JButton(RES.getString("ui.label.resign"));
         buttonResign.setEnabled(false);
-        JButton buttonTakeBack = new JButton("Takeback");
-        JButton buttonNewGame = new JButton("New Game");
-        JButton buttonExit = new JButton("Exit");
+        JButton buttonTakeBack = new JButton(RES.getString("ui.label.take.back"));
+        JButton buttonNewGame = new JButton(RES.getString("ui.label.new.game"));
+        JButton buttonExit = new JButton(RES.getString("ui.label.exit"));
 
         //TODO MOVE OUT HERE
         buttonTakeBack.addActionListener(new ActionListener() {
@@ -277,6 +277,11 @@ public class GraphicalGameView extends GameView {
     }
 
     @Override
+    protected void displayMessage(String message) {
+        System.out.println(message);
+    }
+
+    @Override
     protected void showAllLegalMoves() {
         Board board = gameModel.getGamePosition().getBoard();
         Player currentPlayer = gameModel.getGamePosition().getCurrentPlayer();
@@ -325,7 +330,7 @@ public class GraphicalGameView extends GameView {
             labelWhoseTurn.setIcon(iconWhitePlayer);
         }
 
-        String format = "%d disks";
+        String format = RES.getString("ui.number.disks");
 
         int numberWhiteDisks = gamePosition.getBoard().countPieces(Player.WHITE);
         int numberBlackDisks = gamePosition.getBoard().countPieces(Player.BLACK);

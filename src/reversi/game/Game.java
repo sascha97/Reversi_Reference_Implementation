@@ -93,9 +93,6 @@ public abstract class Game extends Observable {
 
         //Call the method on start new game so that subclasses are able to handle start game stuff.
         onStartNewGame();
-
-        //Notify all the Observers that the Game has changed.
-        gameHasChanged();
     }
 
     /**
@@ -109,9 +106,6 @@ public abstract class Game extends Observable {
         onTakeBackMove();
         //call play again that the game is resumed
         play();
-
-        //Notify all the Observers that the Game has changed.
-        gameHasChanged();
     }
 
     /**
@@ -218,8 +212,11 @@ public abstract class Game extends Observable {
                 }
             }
 
-            //Notify the observers again
-            gameHasChanged();
+            //Display the update only if the thread was not interrupted
+            if (!isInterrupted()) {
+                //Notify the observers again
+                gameHasChanged();
+            }
         }
     }
 }

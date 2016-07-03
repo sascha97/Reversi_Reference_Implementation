@@ -44,6 +44,11 @@ public abstract class GameController implements HumanActor.HumanActable {
     }
 
     @Override
+    public void sendMessage(String message) {
+        gameView.displayMessage(message);
+    }
+
+    @Override
     public final GameMove getUserInput() {
         return this.gameMove;
     }

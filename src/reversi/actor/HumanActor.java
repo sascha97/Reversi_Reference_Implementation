@@ -10,6 +10,8 @@ package reversi.actor;
 import reversi.board.GameMove;
 import reversi.board.GamePosition;
 
+import java.util.ResourceBundle;
+
 /**
  * This is the HumanActor of the ReversiGame.
  *
@@ -23,12 +25,31 @@ public class HumanActor extends Actor {
     //The interface that allows the actor to request its input.
     private HumanActable humanActable;
 
+    private final ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
+
     /**
      * The interface that is required so that any HumanActor can request its input.
      */
     public interface HumanActable {
+        /**
+         * This method is called when a user input should be requested.
+         *
+         * @throws InterruptedException If the game is paused during the request of a user input
+         */
         void requestUserInput() throws InterruptedException;
 
+        /**
+         * This method sends an message that should be displayed on the user interface
+         *
+         * @param message The message that should be displayed on the screen.
+         */
+        void sendMessage(String message);
+
+        /**
+         * This method gets the user input.
+         *
+         * @return The move entered by the user.
+         */
         GameMove getUserInput();
     }
 
@@ -50,6 +71,11 @@ public class HumanActor extends Actor {
         public GameMove move(GamePosition gamePosition) throws InterruptedException {
             //This method requests the user to do the input
             humanActable.requestUserInput();
+
+            while (!gamePosition.getBoard().isMoveLegal(humanActable.getUserInput(), gamePosition.getCurrentPlayer())) {
+                humanActable.sendMessage(RES.getString("message.invalid.move"));
+                humanActable.requestUserInput();
+            }
 
             return humanActable.getUserInput();
         }

@@ -48,7 +48,7 @@ public abstract class ComputerActor extends Actor {
      * This is the base Strategy that all ComputerActors will use. They just make the best move that will be returned
      * by the search(GamePosition, int, Evaluation) method.
      *
-     * @return
+     * @return The base Strategy for every computer actor.
      */
     @Override
     public Strategy getStrategy() {
@@ -67,8 +67,9 @@ public abstract class ComputerActor extends Actor {
      * The game will be won by any player who has more pieces on the board.
      *
      * @param board  The board that should be evaluated.
-     * @param player The players view from which the board should be evaluated.
-     * @return
+     * @param player The player's view from which the board should be evaluated.
+     *
+     * @return An evaluation value of the board.
      */
     protected int finalValue(final Board board, final Player player) {
         int result = 0;

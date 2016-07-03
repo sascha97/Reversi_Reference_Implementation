@@ -10,6 +10,7 @@ package reversi.ui;
 import reversi.game.Game;
 
 import java.util.Observer;
+import java.util.ResourceBundle;
 
 /**
  * Add a description here...
@@ -22,12 +23,16 @@ public abstract class GameView implements Observer {
     protected Game gameModel;
     protected GameController gameController;
 
+    protected final ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
+
     public GameView(Game gameModel) {
         this.gameModel = gameModel;
         gameModel.addObserver(this);
     }
 
     protected abstract String requestUserInput() throws InterruptedException;
+
+    protected abstract void displayMessage(String message);
 
     protected abstract void showAllLegalMoves();
 
