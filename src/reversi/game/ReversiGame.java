@@ -109,8 +109,6 @@ public class ReversiGame extends Game {
             while (gamePositionList.get(gamePositionList.size() - 2).getCurrentPlayer() != humanPlayer) {
                 //Remove computer move
                 gamePositionList.remove(gamePositionList.size() - 1);
-
-                System.out.println("Removed");
             }
 
             //Remove the last human move
