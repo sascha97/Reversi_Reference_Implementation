@@ -40,7 +40,7 @@ public class ConsoleGameController extends GameController {
             return null;
         }
 
-        //trim the imput
+        //trim the input
         userInput = userInput.trim().toLowerCase();
 
         //The letter should be at the first position

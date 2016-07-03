@@ -60,12 +60,18 @@ public class GamePosition {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         GamePosition position = (GamePosition) o;
 
-        if (board != null ? !board.equals(position.board) : position.board != null) return false;
+        if (board != null ? !board.equals(position.board) : position.board != null) {
+            return false;
+        }
         return currentPlayer == position.currentPlayer;
     }
 
@@ -74,5 +80,13 @@ public class GamePosition {
         int result = board != null ? board.hashCode() : 0;
         result = 31 * result + (currentPlayer != null ? currentPlayer.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "GamePosition{" +
+                "board=" + board +
+                ", currentPlayer=" + currentPlayer +
+                '}';
     }
 }

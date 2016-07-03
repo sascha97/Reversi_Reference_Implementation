@@ -21,7 +21,7 @@ public class ReversiGameConfiguration extends GameConfiguration {
     public static final String PLAYER_WHITE_CHAR = "player.white.char";
     public static final String PLAYER_BLACK_COLOR = "player.black.color";
     public static final String PLAYER_BLACK_CHAR = "player.black.char";
-    public static final String PLAYER_EMTPY_CHAR = "player.emtpy.char";
+    public static final String PLAYER_EMPTY_CHAR = "player.empty.char";
     public static final String ALGORITHM_SEARCH_DEPTH = "algorithm.search.depth";
 
     //Singleton design pattern should be applied here
@@ -49,6 +49,4 @@ public class ReversiGameConfiguration extends GameConfiguration {
         //Return the instance of the ReversiGameConfiguration.
         return singleton;
     }
-
-
 }

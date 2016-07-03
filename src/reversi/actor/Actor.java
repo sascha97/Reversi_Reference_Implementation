@@ -24,7 +24,7 @@ public abstract class Actor {
      *
      * @param name The name of the Actor
      */
-    protected Actor(String name) {
+    Actor(String name) {
         this.name = name;
     }
 
@@ -43,4 +43,11 @@ public abstract class Actor {
      * @return An implementation of the Strategy interface.
      */
     public abstract Strategy getStrategy();
+
+    @Override
+    public String toString() {
+        return "Actor{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

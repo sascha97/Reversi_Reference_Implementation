@@ -17,11 +17,11 @@ import reversi.game.ReversiGameConfiguration;
  */
 public final class Square {
     //The configuration of a reversi game.
-    private final static ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
+    private static final ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
     //The x-position of the Square on the board
-    private int xPosition;
+    private final int xPosition;
     //The y-position of the Square on the board
-    private int yPosition;
+    private final int yPosition;
     //The square state of the square
     private SquareState squareState;
 
@@ -152,13 +152,21 @@ public final class Square {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Square square = (Square) o;
 
-        if (xPosition != square.xPosition) return false;
-        if (yPosition != square.yPosition) return false;
+        if (xPosition != square.xPosition) {
+            return false;
+        }
+        if (yPosition != square.yPosition) {
+            return false;
+        }
         return squareState == square.squareState;
 
     }
@@ -169,5 +177,14 @@ public final class Square {
         result = 31 * result + yPosition;
         result = 31 * result + squareState.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Square{" +
+                "xPosition=" + xPosition +
+                ", yPosition=" + yPosition +
+                ", squareState=" + squareState +
+                '}';
     }
 }

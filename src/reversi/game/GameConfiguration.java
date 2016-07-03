@@ -27,7 +27,7 @@ import java.util.Properties;
  */
 public abstract class GameConfiguration {
     //The properties of the game
-    private Properties configurationProperties;
+    private final Properties configurationProperties;
 
     //The name of the config file
     private final String CONFIGURATION_FILE_NAME;
@@ -37,7 +37,7 @@ public abstract class GameConfiguration {
      *
      * @param configurationFileName The name of the configuration file.
      */
-    protected GameConfiguration(String configurationFileName) {
+    GameConfiguration(String configurationFileName) {
         //Create new properties.
         configurationProperties = new Properties();
 
@@ -57,7 +57,7 @@ public abstract class GameConfiguration {
 
         //Checks if file exists otherwise file will be created
         if (configurationFile.exists()) {
-            //Try to read the config from the file by openeing a FileInputStream
+            //Try to read the config from the file by opening a FileInputStream
             try {
                 InputStream configurationFileInputStream = new FileInputStream(configurationFile);
 
@@ -82,7 +82,7 @@ public abstract class GameConfiguration {
      * This method is responsible for storing the configuration to the config file.
      */
     private void storePropertiesToConfigurationFile() {
-        //File where the configuration should be stroed
+        //File where the configuration should be stored
         File configurationFile = new File(CONFIGURATION_FILE_NAME);
 
         try {
@@ -116,7 +116,7 @@ public abstract class GameConfiguration {
      * @return The value of the key stored in the properties.
      */
     public final String getProperty(String key, String defaultValue) {
-        //If properteis does not have any value associated with the key store the key and value in the properties
+        //If properties does not have any value associated with the key store the key and value in the properties
         if (!configurationProperties.containsKey(key)) {
             setProperty(key, defaultValue);
         }
@@ -126,9 +126,9 @@ public abstract class GameConfiguration {
     }
 
     /**
-     * This method will add/chagne the value at the given key.
+     * This method will add/change the value at the given key.
      *
-     * @param key The name of the value that shozld be stored.
+     * @param key The name of the value that should be stored.
      * @param newValue The new value that should be stored in the properties file.
      */
     public final void setProperty(String key, String newValue) {

@@ -29,9 +29,16 @@ public final class GameMove {
     /**
      * This method returns the square where the player wants to move to.
      *
-     * @return
+     * @return The square the player wants to move to
      */
     public Square getSquare() {
         return square;
+    }
+
+    @Override
+    public String toString() {
+        return "GameMove{" +
+                "square=" + square +
+                '}';
     }
 }

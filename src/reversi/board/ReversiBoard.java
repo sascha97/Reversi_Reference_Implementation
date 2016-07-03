@@ -49,7 +49,7 @@ public class ReversiBoard implements Board {
      * empty square.
      */
     private void initializeBoard() {
-        //itereates over the array and initializes each element with an empty square
+        //iterates over the array and initializes each element with an empty square
         for (int x = 0; x < squares.length; x++) {
             for (int y = 0; y < squares[x].length; y++) {
                 //Create a new Square and assign it to the ReversiBoard
@@ -154,7 +154,7 @@ public class ReversiBoard implements Board {
     }
 
     /**
-     * This mehtod checks if a player has any legal moves to do.
+     * This method checks if a player has any legal moves to do.
      *
      * @param player The player that should be checked.
      *
@@ -171,7 +171,7 @@ public class ReversiBoard implements Board {
     /**
      * This method checks if any player has any legal moves.
      *
-     * @return true if any player has at least one legal move - flase if no player has any legal move.
+     * @return true if any player has at least one legal move - false if no player has any legal move.
      */
     @Override
     public boolean hasAnyPlayerAnyLegalMoves() {
@@ -331,7 +331,7 @@ public class ReversiBoard implements Board {
      * @return true if the square encapsulates an opponents square - false if not
      */
     private boolean encapsulatesOpponentsSquare(Square square, Player player) {
-        //get the x and y postion of the square
+        //get the x and y position of the square
         int xPosition = square.getXPosition();
         int yPosition = square.getYPosition();
 
@@ -360,7 +360,7 @@ public class ReversiBoard implements Board {
      *
      * @param square The square that encapsulates the opponents squares.
      * @param player The player whose turn it is.
-     * @param reversiBoard The board where the pieces shoud be flipped
+     * @param reversiBoard The board where the pieces should be flipped
      */
     private void flipPieces(Square square, Player player, ReversiBoard reversiBoard) {
         //get the x and y position of the square
@@ -411,7 +411,7 @@ public class ReversiBoard implements Board {
             //If the square is an opponents square set opponents square true
             if (isOpponentsSquare(square, player)) {
                 opponentSquare = true;
-                //if the square is then an own square the result can only be true if an opponents square was found earlier.
+                //if the square is then an own square result can only be true if an opponents square was found earlier.
                 //and the loop will be left here because after that square no further encapsulation is possible.
             } else if (isOwnSquare(square, player)) {
                 if (opponentSquare) {
@@ -437,7 +437,7 @@ public class ReversiBoard implements Board {
      * @param xPosition The x-Position of the square.
      * @param yPosition The y-Position of the square.
      * @param dx The change in the x direction.
-     * @param dy The chnage in the y direction.
+     * @param dy The change in the y direction.
      * @param player The player whose turn it is.
      * @param reversiBoard The board where the pieces should be flipped.
      */
@@ -466,8 +466,9 @@ public class ReversiBoard implements Board {
      */
     private boolean isEmptySquare(Square square) {
         //if square is null square can not be empty
-        if (square == null)
+        if (square == null) {
             return false;
+        }
 
         return square.getSquareState() == SquareState.EMPTY;
     }
@@ -478,7 +479,7 @@ public class ReversiBoard implements Board {
      * @param square The square that should be checked.
      * @param player The current player from whose view it should be checked.
      *
-     * @return true if the square is an own square - flase if the square is not an own square
+     * @return true if the square is an own square - false if the square is not an own square
      */
     private boolean isOwnSquare(Square square, Player player) {
         //get the opponent and check if the square is an opponents square (i.e. check if it is an own square)
@@ -513,8 +514,12 @@ public class ReversiBoard implements Board {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ReversiBoard that = (ReversiBoard) o;
 
@@ -526,5 +531,12 @@ public class ReversiBoard implements Board {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(squares);
+    }
+
+    @Override
+    public String toString() {
+        return "ReversiBoard{" +
+                "squares=" + Arrays.toString(squares) +
+                '}';
     }
 }

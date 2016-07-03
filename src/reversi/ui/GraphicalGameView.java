@@ -47,7 +47,7 @@ import java.util.Observable;
  */
 public class GraphicalGameView extends GameView {
     //The frame where the board will be displayed
-    private JFrame frame;
+    private final JFrame frame;
     //The panel where the board will be displayed
     private JPanel boardPanel;
     //The panel where the game information will be displayed
@@ -57,7 +57,7 @@ public class GraphicalGameView extends GameView {
     private GridBagLayout gridBagLayout;
 
     //The Squares of the GUI
-    private JButton[][] squares;
+    private final JButton[][] squares;
 
     //The icon for the players
     private final PlayerIcon ICON_WHITE_PLAYER;
@@ -75,7 +75,7 @@ public class GraphicalGameView extends GameView {
     private final Dimension DIMENSION = new Dimension(60, 60);
 
     //Used for synchronizing the results over two threads...
-    private ThreadEvent resultsReady = new ThreadEvent();
+    private final ThreadEvent resultsReady = new ThreadEvent();
     //The input of the user
     private String userInput;
 
@@ -117,7 +117,7 @@ public class GraphicalGameView extends GameView {
         root.add(gameInformationPanel, BorderLayout.LINE_END);
         root.add(boardPanel, BorderLayout.CENTER);
 
-        //Set the coneten pane
+        //Set the content pane
         frame.setContentPane(root);
     }
 
@@ -165,7 +165,7 @@ public class GraphicalGameView extends GameView {
                 //Calculate the letter of the column
                 char letter = (char) ('A' + x);
 
-                //Creatae a new label containing the letter of the row
+                //Create a new label containing the letter of the row
                 JLabel label = new JLabel("" + letter, SwingConstants.CENTER);
                 //set the label to the preferred size
                 label.setPreferredSize(DIMENSION);
@@ -178,7 +178,7 @@ public class GraphicalGameView extends GameView {
         //SET BOARD SQUARES
         for (int x = 1; x <= BOARD_WIDTH; x++) {
             for (int y = 1; y <= BOARD_HEIGHT; y++) {
-                //Set the x and y position on the griud
+                //Set the x and y position on the grid
                 constraints.gridx = x;
                 constraints.gridy = y;
 
@@ -197,7 +197,7 @@ public class GraphicalGameView extends GameView {
             }
         }
 
-        //set the background color on the boad panel
+        //set the background color on the board panel
         boardPanel.setBackground(Color.LIGHT_GRAY);
     }
 
@@ -215,7 +215,7 @@ public class GraphicalGameView extends GameView {
         //The constraints of the grid
         GridBagConstraints constraints = new GridBagConstraints();
 
-        //Set the grid constraings
+        //Set the grid constraints
         constraints.gridy = 0;
         constraints.gridx = 0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -291,10 +291,10 @@ public class GraphicalGameView extends GameView {
         menuPanel.setBackground(color);
 
         //Create the 4 control buttons
-        JButton buttonResign = new JButton(RES.getString("ui.label.resign"));
-        JButton buttonTakeBack = new JButton(RES.getString("ui.label.take.back"));
-        JButton buttonNewGame = new JButton(RES.getString("ui.label.new.game"));
-        JButton buttonExit = new JButton(RES.getString("ui.label.exit"));
+        final JButton buttonResign = new JButton(RES.getString("ui.label.resign"));
+        final JButton buttonTakeBack = new JButton(RES.getString("ui.label.take.back"));
+        final JButton buttonNewGame = new JButton(RES.getString("ui.label.new.game"));
+        final JButton buttonExit = new JButton(RES.getString("ui.label.exit"));
 
         //Add the action to the control buttons
         buttonTakeBack.addActionListener(new ActionListener() {
@@ -382,7 +382,7 @@ public class GraphicalGameView extends GameView {
     }
 
     /**
-     * This mehtod is used to display any messages on the console game view
+     * This method is used to display any messages on the console game view
      *
      * @param message The message which should be displayed
      */
@@ -482,7 +482,7 @@ public class GraphicalGameView extends GameView {
     }
 
     /**
-     * This method is used to disalbe al user input from the gui
+     * This method is used to disable all user input from the gui
      */
     private void disableInput() {
         //Iterates over all squares and sets disables all enabled squares.
@@ -499,7 +499,7 @@ public class GraphicalGameView extends GameView {
     /**
      * The action which should be performed when a square button is clicked
      */
-    private ActionListener userInputsMove = new ActionListener() {
+    private final ActionListener userInputsMove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             //Get the button which is clicked
@@ -526,7 +526,7 @@ public class GraphicalGameView extends GameView {
      * Private class for displaying the players disks.
      */
     private static class PlayerIcon implements Icon {
-        private Color color;
+        private final Color color;
 
         PlayerIcon(Color color) {
             this.color = color;

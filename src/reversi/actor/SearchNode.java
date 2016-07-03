@@ -24,7 +24,7 @@ class SearchNode {
     private final int evaluationValue;
 
     /**
-     * Constuctor for any SearchNode, get the GameMove and its corresponding evaluation value and store it in the
+     * Constructor for any SearchNode, get the GameMove and its corresponding evaluation value and store it in the
      * immutable object.
      *
      * @param gameMove        The GameMove that is evaluated.
@@ -61,5 +61,13 @@ class SearchNode {
      */
     SearchNode negated() {
         return new SearchNode(gameMove, -evaluationValue);
+    }
+
+    @Override
+    public String toString() {
+        return "SearchNode{" +
+                "gameMove=" + gameMove +
+                ", evaluationValue=" + evaluationValue +
+                '}';
     }
 }

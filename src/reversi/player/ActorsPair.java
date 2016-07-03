@@ -32,7 +32,7 @@ public class ActorsPair {
     }
 
     /**
-     * Construtor for the ActorsPair.
+     * Constructor for the ActorsPair.
      *
      * @param whitePlayer the actor playing white.
      * @param blackPlayer the actor playing black.
@@ -74,7 +74,7 @@ public class ActorsPair {
      * @param player The player whose actor should be changed.
      * @param actor  The actor who should be mapped to the player.
      */
-    public void setActor(Player player, Actor actor) {
+    private void setActor(Player player, Actor actor) {
         actors.put(player, actor);
     }
 
@@ -87,5 +87,12 @@ public class ActorsPair {
      */
     public Actor getActor(Player player) {
         return actors.get(player);
+    }
+
+    @Override
+    public String toString() {
+        return "ActorsPair{" +
+                "actors=" + actors +
+                '}';
     }
 }

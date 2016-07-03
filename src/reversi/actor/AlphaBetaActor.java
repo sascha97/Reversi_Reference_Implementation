@@ -58,17 +58,16 @@ public class AlphaBetaActor extends ComputerActor {
      * @param evaluation The evaluation algorithm how a GamePosition is evaluated.
      * @return The best move of the AlphaBetaActor
      */
-    private SearchNode searchImpl(final Player player, final Board board, final int alpha, final int beta,
-                                  final int depth, final Evaluation evaluation) {
+    private SearchNode searchImpl(Player player, Board board, int alpha, int beta, int depth, Evaluation evaluation) {
         //If interrupted stop Searching as soon as possible
-        if (super.isInterrupted()) {
+        if (isInterrupted()) {
             return new SearchNode(null, 0);
         }
 
         //The best search node
         SearchNode node;
         //get the opponent of the current player
-        final Player opponent = player.getOpponent();
+        Player opponent = player.getOpponent();
 
         //If depth is reached stop searching and just return an evaluation value of the current position
         if (depth == 0) {

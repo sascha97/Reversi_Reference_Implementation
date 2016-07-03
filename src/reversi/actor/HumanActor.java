@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 /**
  * This is the HumanActor of the ReversiGame.
  *
- * The HumanActor is dependend on any user input.
+ * The HumanActor is dependent on any user input.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 16. May 2016
@@ -66,7 +66,7 @@ public class HumanActor extends Actor {
         return humanStrategy;
     }
 
-    private Strategy humanStrategy = new Strategy() {
+    private final Strategy humanStrategy = new Strategy() {
         @Override
         public GameMove move(GamePosition gamePosition) throws InterruptedException {
             //This method requests the user to do the input

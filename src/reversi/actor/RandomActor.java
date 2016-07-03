@@ -36,8 +36,8 @@ public class RandomActor extends Actor {
     /*
      * This Strategy returns a Random move.
      */
-    private final static Strategy randomStrategy = new Strategy() {
-        private Random random = new Random();
+    private static final Strategy randomStrategy = new Strategy() {
+        private final Random random = new Random();
 
         @Override
         public GameMove move(GamePosition gamePosition) {
@@ -48,7 +48,7 @@ public class RandomActor extends Actor {
             //Get all legal moves
             List<GameMove> legalMoves = board.getAllLegalMoves(currentPlayer);
             //An random number representing one of the elements present in the list
-            int r = this.random.nextInt(legalMoves.size());
+            int r = random.nextInt(legalMoves.size());
 
             //Returns a random possible move.
             return legalMoves.get(r);

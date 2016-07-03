@@ -50,7 +50,7 @@ public interface Board {
     int countPieces(Player player);
 
     /**
-     * This method reuturns the SquareState of a square at a given position.
+     * This method returns the SquareState of a square at a given position.
      * The position is dependent by an x and y value.
      *
      * @param xPosition The x-Position of the Square which state should be returned.

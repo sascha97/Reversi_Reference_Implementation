@@ -12,7 +12,7 @@ import reversi.board.GameMove;
 import reversi.game.Game;
 
 /**
- * This is the abstract base class for any controller used in this programm.
+ * This is the abstract base class for any controller used in this program.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 15. May 2016
@@ -34,19 +34,19 @@ public abstract class GameController implements HumanActor.HumanActable {
     }
 
     //The gameModel
-    protected Game gameModel;
+    final Game gameModel;
     //The Game view
-    protected GameView gameView;
+    private GameView gameView;
 
     //The last game move made by an user.
-    private GameMove gameMove = null;
+    private GameMove gameMove;
 
     /**
      * Constructor to create a GameController
      *
      * @param gameModel The model of the controller
      */
-    public GameController(Game gameModel) {
+    GameController(Game gameModel) {
         this.gameModel = gameModel;
     }
 
@@ -55,7 +55,7 @@ public abstract class GameController implements HumanActor.HumanActable {
      *
      * @param action The game action that the user has entered.
      */
-    protected final void handleUserAction(GameAction action) {
+    final void handleUserAction(GameAction action) {
         switch (action) {
             //Take back a move
             case TAKEBACK:
@@ -101,11 +101,11 @@ public abstract class GameController implements HumanActor.HumanActable {
     /**
      * This method is implemented so that the controller can act as an HumanActable.
      *
-     * @throws InterruptedException if the game is interruped whilst requesting an input
+     * @throws InterruptedException if the game is interrupted whilst requesting an input
      */
     @Override
     public final void requestUserInput() throws InterruptedException {
-        //Display all the leagl moves to the user
+        //Display all the legal moves to the user
         gameView.showAllLegalMoves();
 
         //Get the input of the user

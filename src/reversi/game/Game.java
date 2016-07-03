@@ -33,7 +33,7 @@ public abstract class Game extends Observable {
      *
      * @param actorsPair The actors of the game.
      */
-    protected Game(ActorsPair actorsPair) {
+    Game(ActorsPair actorsPair) {
         //Create a new GameThread
         gameThread = new GameThread();
         ACTORS_PAIR = actorsPair;
@@ -68,7 +68,7 @@ public abstract class Game extends Observable {
      * This method has to be called if the game should be played.
      */
     public final void play() {
-        //creates new game thread and starts the new game threa
+        //creates new game thread and starts the new game thread
         gameThread = new GameThread();
         gameThread.start();
     }
@@ -111,7 +111,7 @@ public abstract class Game extends Observable {
     /**
      * This method returns the current game position.
      *
-     * @return The current GamePosiion of the game.
+     * @return The current GamePosition of the game.
      */
     public abstract GamePosition getGamePosition();
 
@@ -134,7 +134,7 @@ public abstract class Game extends Observable {
     protected abstract void onTakeBackMove();
 
     /**
-     * This method has to be called if the game has changed and the Obervers should be notified.
+     * This method has to be called if the game has changed and the Observers should be notified.
      */
     private void gameHasChanged() {
         //Set the state changed
@@ -154,7 +154,7 @@ public abstract class Game extends Observable {
         //Get the Current player
         Player currentPlayer = currentGamePosition.getCurrentPlayer();
 
-        //Get the actor who is repsonsible for making the moves
+        //Get the actor who is responsible for making the moves
         Actor actor = ACTORS_PAIR.getActor(currentPlayer);
 
         //If Thread is interrupted end the method.

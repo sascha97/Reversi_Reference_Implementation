@@ -20,7 +20,7 @@ public enum Player {
     WHITE(SquareState.WHITE);
 
     //The SquareState of the player.
-    private SquareState squareState;
+    private final SquareState squareState;
 
     /**
      * Creates a new Player with a given squareState.

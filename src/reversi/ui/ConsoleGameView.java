@@ -28,7 +28,7 @@ import java.util.Scanner;
  */
 public class ConsoleGameView extends GameView {
     //Used for synchronizing the results over two threads...
-    private ThreadEvent resultsReady = new ThreadEvent();
+    private final ThreadEvent resultsReady = new ThreadEvent();
     //The input of the user.
     private String userInput;
 
@@ -48,7 +48,7 @@ public class ConsoleGameView extends GameView {
         ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
         WHITE_PLAYER = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_CHAR, "W").charAt(0);
         BLACK_PLAYER = configuration.getProperty(ReversiGameConfiguration.PLAYER_BLACK_CHAR, "B").charAt(0);
-        EMPTY_PLAYER = configuration.getProperty(ReversiGameConfiguration.PLAYER_EMTPY_CHAR, "-").charAt(0);
+        EMPTY_PLAYER = configuration.getProperty(ReversiGameConfiguration.PLAYER_EMPTY_CHAR, "-").charAt(0);
 
         //Start an input thread, only purpose of this input thread is to ask for the user input all the time...
         inputThread();
@@ -62,6 +62,7 @@ public class ConsoleGameView extends GameView {
                 //The scanner to get the input from the console
                 Scanner scanner = new Scanner(System.in);
 
+                //Endless loop is wanted because the program is ended otherwise
                 while (true) {
                     //Store the user input in a variable variable
                     userInput = scanner.nextLine().trim().toLowerCase();
@@ -76,7 +77,7 @@ public class ConsoleGameView extends GameView {
                     } else if (userInput.contains(RES.getString("control.exit"))) {
                         gameController.handleUserAction(GameController.GameAction.END_GAME);
                         //if a move should be taken back do so
-                    } else if (userInput.contains(RES.getString("control.takeback"))) {
+                    } else if (userInput.contains(RES.getString("control.take.back"))) {
                         gameController.handleUserAction(GameController.GameAction.TAKEBACK);
                     } else {
                         //if no game action should be performed then tell the waiting thread that the input is ready
@@ -108,7 +109,7 @@ public class ConsoleGameView extends GameView {
     }
 
     /**
-     * This mehtod is used to display any messages on the console game view
+     * This method is used to display any messages on the console game view
      *
      * @param message The message which should be displayed
      */
@@ -162,8 +163,14 @@ public class ConsoleGameView extends GameView {
 
         //if game is finished display the statistics to the user
         if (!gameModel.hasGameAnyLegalMoves()) {
-            System.out.printf(RES.getString("ui.label.player.white"), gameModel.getNumberOfPieces(Player.WHITE));
-            System.out.printf(RES.getString("ui.label.player.black"), gameModel.getNumberOfPieces(Player.BLACK));
+            String whitePlayer = String.format(RES.getString("ui.label.player.white"),
+                    this.gameModel.getNumberOfPieces(Player.WHITE));
+
+            String blackPlayer = String.format(RES.getString("ui.label.player.black"),
+                    this.gameModel.getNumberOfPieces(Player.BLACK));
+
+            displayMessage(whitePlayer);
+            displayMessage(blackPlayer);
         }
     }
 
@@ -184,7 +191,7 @@ public class ConsoleGameView extends GameView {
             System.out.printf("%2c", c);
         }
         System.out.println();
-        //Print the numers on the left of the board
+        //Print the numbers on the left of the board
         for (int y = 0; y < boardWidth; y++) {
             System.out.print(y + 1 + "|");
             for (int x = 0; x < boardHeight; x++) {

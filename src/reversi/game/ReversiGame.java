@@ -26,12 +26,10 @@ public class ReversiGame extends Game {
     private GamePosition currentGamePosition;
 
     //The list containing all game positions
-    private List<GamePosition> gamePositionList;
+    private final List<GamePosition> gamePositionList;
 
-    //The configuration file of the ReversiGame
-    private ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
-
-    private Player humanPlayer;
+    //The humanPlayer field
+    private final Player humanPlayer;
 
     /**
      * Constructor of the ReversiGame.
@@ -44,6 +42,8 @@ public class ReversiGame extends Game {
         //Create empty game position list.
         gamePositionList = new ArrayList<>();
 
+        //Get the configuration
+        ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
         //Get the color that the human player wants to play
         String humanColor = config.getProperty(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, "black");
 
@@ -120,5 +120,13 @@ public class ReversiGame extends Game {
             //Set the GamePosition as current game position
             setGamePosition(currentGamePosition);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ReversiGame{" +
+                "humanPlayer=" + humanPlayer +
+                ", currentGamePosition=" + currentGamePosition +
+                '}';
     }
 }

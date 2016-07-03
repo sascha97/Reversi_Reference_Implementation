@@ -20,7 +20,7 @@ import reversi.board.GamePosition;
 public class CountDifferenceEvaluation implements Evaluation {
     @Override
     public int evaluateGame(GamePosition gamePosition) {
-        //Returns the differnce between two players
+        //Returns the difference between two players
         return gamePosition.getBoard().countDifference(gamePosition.getCurrentPlayer());
     }
 }

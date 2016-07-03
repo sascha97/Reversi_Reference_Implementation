@@ -21,19 +21,19 @@ import java.util.ResourceBundle;
 
 public abstract class GameView implements Observer {
     //The game model
-    protected Game gameModel;
+    final Game gameModel;
     //The game controller
-    protected GameController gameController;
+    GameController gameController;
 
     //The resource bundle containing internationalized strings
-    protected final ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
+    final ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
 
     /**
      * The constructor to set up the game view
      *
      * @param gameModel The gameModel which should be displayed.
      */
-    public GameView(Game gameModel) {
+    GameView(Game gameModel) {
         //Set this as game view and register the observer
         this.gameModel = gameModel;
         gameModel.addObserver(this);
@@ -48,7 +48,7 @@ public abstract class GameView implements Observer {
     protected abstract String requestUserInput() throws InterruptedException;
 
     /**
-     * This mehtod is used to display any messages on the game view.
+     * This method is used to display any messages on the game view.
      *
      * @param message The message which should be displayed
      */

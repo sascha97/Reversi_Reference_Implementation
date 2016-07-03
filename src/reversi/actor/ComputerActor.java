@@ -31,10 +31,10 @@ public abstract class ComputerActor extends Actor {
     private final Evaluation evaluation;
 
     //Constants declaring the MAXIMAL and MINIMAL VALUE for WINNING OR LOOSING the ReversiGame.
-    protected final int WINNING_VALUE = 2_000_000_000;
-    protected final int LOOSING_VALUE = -2_000_000_000;
+    final int WINNING_VALUE = 2_000_000_000;
+    final int LOOSING_VALUE = -2_000_000_000;
 
-    protected ComputerActor(String name) {
+    ComputerActor(String name) {
         super(name);
 
         //Get the configuration and load the search depth from the config file.
@@ -71,7 +71,7 @@ public abstract class ComputerActor extends Actor {
      *
      * @return An evaluation value of the board.
      */
-    protected int finalValue(final Board board, final Player player) {
+    int finalValue(Board board, Player player) {
         int result = 0;
 
         //Check who has more pieces on the board, and then set if the player is winning or not.
@@ -91,9 +91,9 @@ public abstract class ComputerActor extends Actor {
      * This method should be called when any computer search is done, because it should be possible to stop the search
      * if a game has to be interrupted.
      *
-     * @return true if the algorithm should be interupted. false if the algorithm should not be interrupted.
+     * @return true if the algorithm should be interrupted. false if the algorithm should not be interrupted.
      */
-    protected final boolean isInterrupted() {
+    final boolean isInterrupted() {
         //returns if the GameThread is interrupted, this is the only thread calling this
         return Thread.currentThread().isInterrupted();
     }
@@ -109,4 +109,14 @@ public abstract class ComputerActor extends Actor {
      * @return The best move for the ComputerActor
      */
     protected abstract SearchNode search(GamePosition gamePosition, int depth, Evaluation evaluation);
+
+    @Override
+    public String toString() {
+        return "ComputerActor{" +
+                "DEPTH=" + DEPTH +
+                ", evaluation=" + evaluation +
+                ", WINNING_VALUE=" + WINNING_VALUE +
+                ", LOOSING_VALUE=" + LOOSING_VALUE +
+                '}';
+    }
 }
