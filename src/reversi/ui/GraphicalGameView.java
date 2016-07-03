@@ -60,8 +60,8 @@ public class GraphicalGameView extends GameView {
     private JButton[][] squares;
 
     //The icon for the players
-    private PlayerIcon iconWhitePlayer = new PlayerIcon(Color.YELLOW);
-    private PlayerIcon iconBlackPlayer = new PlayerIcon(Color.RED);
+    private final PlayerIcon ICON_WHITE_PLAYER;
+    private final PlayerIcon ICON_BLACK_PLAYER;
 
     //The labels
     private JLabel labelWhoseTurn;
@@ -86,6 +86,17 @@ public class GraphicalGameView extends GameView {
      */
     public GraphicalGameView(Game gameModel) {
         super(gameModel);
+
+        //Get the configuration to load the color of the players pieces
+        ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
+
+        //Load the string values of the colors of the players
+        String colorBlack = configuration.getProperty(ReversiGameConfiguration.PLAYER_BLACK_COLOR, "0xFF0000");
+        String colorWhite = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
+
+        //Decode the color values from the hexadecimal input
+        ICON_BLACK_PLAYER = new PlayerIcon(Color.decode(colorBlack));
+        ICON_WHITE_PLAYER = new PlayerIcon(Color.decode(colorWhite));
 
         //Get the dimension of the board from the model.
         BOARD_WIDTH = gameModel.getGamePosition().getBoard().getBoardWidth();
@@ -220,7 +231,7 @@ public class GraphicalGameView extends GameView {
         currentPlayer.setBorder(BorderFactory.createTitledBorder(RES.getString("ui.label.current.player")));
 
         //Init label whose turn and add it to the right panel
-        labelWhoseTurn = new JLabel(iconWhitePlayer, SwingConstants.CENTER);
+        labelWhoseTurn = new JLabel(ICON_WHITE_PLAYER, SwingConstants.CENTER);
         labelWhoseTurn.setPreferredSize(new Dimension(60, 60));
         currentPlayer.add(labelWhoseTurn);
 
@@ -237,7 +248,7 @@ public class GraphicalGameView extends GameView {
         constraintsPlayer.weightx = 0.4;
         constraintsPlayer.ipady = 10;
         //Add a new label on the player panel for the white player
-        JLabel labelWhitePlayer = new JLabel(iconWhitePlayer, SwingConstants.CENTER);
+        JLabel labelWhitePlayer = new JLabel(ICON_WHITE_PLAYER, SwingConstants.CENTER);
         labelWhitePlayer.setPreferredSize(new Dimension(60, 60));
         panelPlayerStatus.add(labelWhitePlayer, constraintsPlayer);
 
@@ -253,7 +264,7 @@ public class GraphicalGameView extends GameView {
         constraintsPlayer.gridy = 1;
         constraintsPlayer.weightx = 0.4;
         //Add a new label on the player panel for the black player
-        JLabel labelBlackPlayer = new JLabel(iconBlackPlayer, SwingConstants.CENTER);
+        JLabel labelBlackPlayer = new JLabel(ICON_BLACK_PLAYER, SwingConstants.CENTER);
         labelWhitePlayer.setPreferredSize(new Dimension(60, 60));
         panelPlayerStatus.add(labelBlackPlayer, constraintsPlayer);
 
@@ -436,9 +447,9 @@ public class GraphicalGameView extends GameView {
 
                 //Add the corresponding icon to the square
                 if (state == SquareState.WHITE) {
-                    squares[x][y].setIcon(iconWhitePlayer);
+                    squares[x][y].setIcon(ICON_WHITE_PLAYER);
                 } else if (state == SquareState.BLACK) {
-                    squares[x][y].setIcon(iconBlackPlayer);
+                    squares[x][y].setIcon(ICON_BLACK_PLAYER);
                 }
             }
         }
@@ -453,9 +464,9 @@ public class GraphicalGameView extends GameView {
 
         //Set the label which displays whose turn it is
         if (gamePosition.getCurrentPlayer() == Player.BLACK) {
-            labelWhoseTurn.setIcon(iconBlackPlayer);
+            labelWhoseTurn.setIcon(ICON_BLACK_PLAYER);
         } else {
-            labelWhoseTurn.setIcon(iconWhitePlayer);
+            labelWhoseTurn.setIcon(ICON_WHITE_PLAYER);
         }
 
         //get the internationalized format String for the number of disks
