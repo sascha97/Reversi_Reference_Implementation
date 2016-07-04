@@ -42,19 +42,8 @@ public class ReversiGame extends Game {
         //Create empty game position list.
         gamePositionList = new ArrayList<>();
 
-        //Get the configuration
-        ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
-        //Get the color that the human player wants to play
-        String humanColor = config.getProperty(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, "black");
-
-        //Set the human player to the right color
-        if (humanColor.toLowerCase().contains("black")) {
-            actorsPair.setHumanPlayer(Player.BLACK);
-            humanPlayer = Player.BLACK;
-        } else {
-            actorsPair.setHumanPlayer(Player.WHITE);
-            humanPlayer = Player.WHITE;
-        }
+        //Set the human player
+        humanPlayer = determineHumanPlayer();
 
         startNewGame();
     }

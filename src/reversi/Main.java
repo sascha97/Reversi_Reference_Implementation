@@ -34,8 +34,8 @@ public class Main {
         ActorsPair actorsPair = new ActorsPair(actor, humanActor);
 
         Game gameModel = new ReversiGame(actorsPair);
-        GameView view = new ConsoleGameView(gameModel);
-        GameController controller = new ConsoleGameController(gameModel);
+        GameView view = new GraphicalGameView(gameModel);
+        GameController controller = new GraphicalGameController(gameModel);
         view.setGameController(controller);
         controller.setGameView(view);
 

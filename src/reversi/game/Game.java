@@ -91,6 +91,9 @@ public abstract class Game extends Observable {
         //Wait for the current game to interrupt.
         interruptGameAndWaitForFinish();
 
+        //Set up the human player if the configuration was changed after the game was loaded set the human player now
+        ACTORS_PAIR.setHumanPlayer(determineHumanPlayer());
+
         //Call the method on start new game so that subclasses are able to handle start game stuff.
         onStartNewGame();
     }
@@ -192,6 +195,30 @@ public abstract class Game extends Observable {
                 ie.printStackTrace();
             }
         }
+    }
+
+    /**
+     * This method is responsible for determining which player is the human player.
+     *
+     * @return The player that represents the human player.
+     */
+    Player determineHumanPlayer() {
+        //The human player
+        Player humanPlayer;
+
+        //Get the configuration
+        ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
+        //Get the color that the human player wants to play
+        String humanColor = config.getProperty(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, "black");
+
+        //Set the human player to the right color
+        if (humanColor.toLowerCase().contains("black")) {
+            humanPlayer = Player.BLACK;
+        } else {
+            humanPlayer = Player.WHITE;
+        }
+
+        return humanPlayer;
     }
 
     //This class is responsible for making the moves without in another thread.
