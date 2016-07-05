@@ -77,7 +77,6 @@ public abstract class GameController implements HumanActor.HumanActable {
                 if (gameModel.hasGameAnyLegalMoves()) {
                     gameModel.endGame();
                 }
-                System.exit(0);
                 break;
         }
     }
