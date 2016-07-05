@@ -24,8 +24,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,6 +38,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.List;
 import java.util.Observable;
 
@@ -60,11 +63,13 @@ public class GraphicalGameView extends GameView {
     private final JButton[][] squares;
 
     //The icon for the players
-    private final PlayerIcon ICON_WHITE_PLAYER;
-    private final PlayerIcon ICON_BLACK_PLAYER;
+    private PlayerIcon ICON_WHITE_PLAYER;
+    private PlayerIcon ICON_BLACK_PLAYER;
 
     //The labels
     private JLabel labelWhoseTurn;
+    private JLabel labelWhitePlayer;
+    private JLabel labelBlackPlayer;
     private JLabel labelWhitePlayerDisks;
     private JLabel labelBlackPlayerDisks;
 
@@ -87,16 +92,7 @@ public class GraphicalGameView extends GameView {
     public GraphicalGameView(Game gameModel) {
         super(gameModel);
 
-        //Get the configuration to load the color of the players pieces
-        ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
-
-        //Load the string values of the colors of the players
-        String colorBlack = configuration.getProperty(ReversiGameConfiguration.PLAYER_BLACK_COLOR, "0xFF0000");
-        String colorWhite = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
-
-        //Decode the color values from the hexadecimal input
-        ICON_BLACK_PLAYER = new PlayerIcon(Color.decode(colorBlack));
-        ICON_WHITE_PLAYER = new PlayerIcon(Color.decode(colorWhite));
+        updatePlayerIcons();
 
         //Get the dimension of the board from the model.
         BOARD_WIDTH = gameModel.getGamePosition().getBoard().getBoardWidth();
@@ -248,7 +244,7 @@ public class GraphicalGameView extends GameView {
         constraintsPlayer.weightx = 0.4;
         constraintsPlayer.ipady = 10;
         //Add a new label on the player panel for the white player
-        JLabel labelWhitePlayer = new JLabel(ICON_WHITE_PLAYER, SwingConstants.CENTER);
+        labelWhitePlayer = new JLabel(ICON_WHITE_PLAYER, SwingConstants.CENTER);
         labelWhitePlayer.setPreferredSize(new Dimension(60, 60));
         panelPlayerStatus.add(labelWhitePlayer, constraintsPlayer);
 
@@ -264,7 +260,7 @@ public class GraphicalGameView extends GameView {
         constraintsPlayer.gridy = 1;
         constraintsPlayer.weightx = 0.4;
         //Add a new label on the player panel for the black player
-        JLabel labelBlackPlayer = new JLabel(ICON_BLACK_PLAYER, SwingConstants.CENTER);
+        labelBlackPlayer = new JLabel(ICON_BLACK_PLAYER, SwingConstants.CENTER);
         labelWhitePlayer.setPreferredSize(new Dimension(60, 60));
         panelPlayerStatus.add(labelBlackPlayer, constraintsPlayer);
 
@@ -302,6 +298,7 @@ public class GraphicalGameView extends GameView {
             public void actionPerformed(ActionEvent e) {
                 //Disable input even when it would not make any sense
                 disableInput();
+                //controler to handle the game action
                 gameController.handleUserAction(GameController.GameAction.TAKEBACK);
             }
         });
@@ -309,9 +306,12 @@ public class GraphicalGameView extends GameView {
         buttonNewGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Enable the buttons that should be clickable again
                 buttonResign.setEnabled(true);
                 buttonTakeBack.setEnabled(true);
+                //input no longer needed
                 disableInput();
+                //controller to handle the game action
                 gameController.handleUserAction(GameController.GameAction.NEW_GAME);
             }
         });
@@ -319,9 +319,12 @@ public class GraphicalGameView extends GameView {
         buttonResign.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                disableInput();
+                //Disable the buttons that should not be clickable any more
                 buttonTakeBack.setEnabled(false);
                 buttonResign.setEnabled(false);
+                //Input no longer needed
+                disableInput();
+                //controller to handle the game action
                 gameController.handleUserAction(GameController.GameAction.RESIGN);
             }
         });
@@ -329,9 +332,12 @@ public class GraphicalGameView extends GameView {
         buttonExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //controller to handle the game action
                 gameController.handleUserAction(GameController.GameAction.END_GAME);
                 //Input no longer needed
                 disableInput();
+                //Get rid of the frame because it is no longer needed
+                frame.dispose();
             }
         });
 
@@ -396,22 +402,27 @@ public class GraphicalGameView extends GameView {
      */
     @Override
     protected void showAllLegalMoves() {
-        //Get the current game position and the current player
-        Board board = gameModel.getGamePosition().getBoard();
-        Player currentPlayer = gameModel.getGamePosition().getCurrentPlayer();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                //Get the current game position and the current player
+                Board board = gameModel.getGamePosition().getBoard();
+                Player currentPlayer = gameModel.getGamePosition().getCurrentPlayer();
 
-        //Get all legal moves
-        List<GameMove> legalMoves = board.getAllLegalMoves(currentPlayer);
-        for (GameMove move : legalMoves) {
-            //Get the square
-            Square square = move.getSquare();
-            //Get the x and y position of the square
-            int xPos = square.getXPosition();
-            int yPos = square.getYPosition();
+                //Get all legal moves
+                List<GameMove> legalMoves = board.getAllLegalMoves(currentPlayer);
+                for (GameMove move : legalMoves) {
+                    //Get the square
+                    Square square = move.getSquare();
+                    //Get the x and y position of the square
+                    int xPos = square.getXPosition();
+                    int yPos = square.getYPosition();
 
-            //Enable the square
-            squares[xPos][yPos].setEnabled(true);
-        }
+                    //Enable the square
+                    squares[xPos][yPos].setEnabled(true);
+                }
+            }
+        });
     }
 
     /**
@@ -432,67 +443,103 @@ public class GraphicalGameView extends GameView {
      * This method is responsible for updating the board
      */
     private void updateBoard() {
-        //Get the current board
-        Board board = gameModel.getGamePosition().getBoard();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                //Get the current board
+                Board board = gameModel.getGamePosition().getBoard();
 
-        //iterate over the board
-        for (int x = 0; x < board.getBoardWidth(); x++) {
-            for (int y = 0; y < board.getBoardHeight(); y++) {
-                //remove all icons from the square
-                squares[x][y].setIcon(null);
+                //iterate over the board
+                for (int x = 0; x < board.getBoardWidth(); x++) {
+                    for (int y = 0; y < board.getBoardHeight(); y++) {
+                        //remove all icons from the square
+                        squares[x][y].setIcon(null);
 
-                //get the square from the board
-                Square square = board.getSquare(x, y);
-                SquareState state = square.getSquareState();
+                        //get the square from the board
+                        Square square = board.getSquare(x, y);
+                        SquareState state = square.getSquareState();
 
-                //Add the corresponding icon to the square
-                if (state == SquareState.WHITE) {
-                    squares[x][y].setIcon(ICON_WHITE_PLAYER);
-                } else if (state == SquareState.BLACK) {
-                    squares[x][y].setIcon(ICON_BLACK_PLAYER);
+                        //Add the corresponding icon to the square
+                        if (state == SquareState.WHITE) {
+                            squares[x][y].setIcon(ICON_WHITE_PLAYER);
+                        } else if (state == SquareState.BLACK) {
+                            squares[x][y].setIcon(ICON_BLACK_PLAYER);
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     /**
      * This method is responsible for updating the game information panel
      */
     private void updateGameInformation() {
-        //Get the current game position
-        GamePosition gamePosition = gameModel.getGamePosition();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                //Get the current game position
+                GamePosition gamePosition = gameModel.getGamePosition();
 
-        //Set the label which displays whose turn it is
-        if (gamePosition.getCurrentPlayer() == Player.BLACK) {
-            labelWhoseTurn.setIcon(ICON_BLACK_PLAYER);
-        } else {
-            labelWhoseTurn.setIcon(ICON_WHITE_PLAYER);
-        }
+                //Set the label which displays whose turn it is
+                if (gamePosition.getCurrentPlayer() == Player.BLACK) {
+                    labelWhoseTurn.setIcon(ICON_BLACK_PLAYER);
+                } else {
+                    labelWhoseTurn.setIcon(ICON_WHITE_PLAYER);
+                }
 
-        //get the internationalized format String for the number of disks
-        String format = RES.getString("ui.number.disks");
+                //get the internationalized format String for the number of disks
+                String format = RES.getString("ui.number.disks");
 
-        //get the number of disks for any player
-        int numberWhiteDisks = gamePosition.getBoard().countPieces(Player.WHITE);
-        int numberBlackDisks = gamePosition.getBoard().countPieces(Player.BLACK);
+                //get the number of disks for any player
+                int numberWhiteDisks = gamePosition.getBoard().countPieces(Player.WHITE);
+                int numberBlackDisks = gamePosition.getBoard().countPieces(Player.BLACK);
 
-        //Update the label
-        labelBlackPlayerDisks.setText(String.format(format, numberBlackDisks));
-        labelWhitePlayerDisks.setText(String.format(format, numberWhiteDisks));
+                //Update the label
+                labelBlackPlayerDisks.setText(String.format(format, numberBlackDisks));
+                labelWhitePlayerDisks.setText(String.format(format, numberWhiteDisks));
+            }
+        });
     }
 
     /**
      * This method is used to disable all user input from the gui
      */
     private void disableInput() {
-        //Iterates over all squares and sets disables all enabled squares.
-        for (int x = 0; x < BOARD_WIDTH; x++) {
-            for (int y = 0; y < BOARD_HEIGHT; y++) {
-                JButton button = squares[x][y];
-                if (button.isEnabled()) {
-                    button.setEnabled(false);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                //Iterates over all squares and sets disables all enabled squares.
+                for (int x = 0; x < BOARD_WIDTH; x++) {
+                    for (int y = 0; y < BOARD_HEIGHT; y++) {
+                        JButton button = squares[x][y];
+                        if (button.isEnabled()) {
+                            button.setEnabled(false);
+                        }
+                    }
                 }
             }
+        });
+    }
+
+    private void updatePlayerIcons() {
+        //Get the configuration to load the color of the players pieces
+        ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
+
+        //Load the string values of the colors of the players
+        String colorBlack = configuration.getProperty(ReversiGameConfiguration.PLAYER_BLACK_COLOR, "0xFF0000");
+        String colorWhite = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
+
+        //Decode the color values from the hexadecimal input
+        ICON_BLACK_PLAYER = new PlayerIcon(Color.decode(colorBlack));
+        ICON_WHITE_PLAYER = new PlayerIcon(Color.decode(colorWhite));
+
+        if (labelBlackPlayer != null) {
+            labelBlackPlayer.setIcon(ICON_BLACK_PLAYER);
+        }
+
+        if (labelWhitePlayer != null) {
+            labelWhitePlayer.setIcon(ICON_WHITE_PLAYER);
         }
     }
 
@@ -525,10 +572,10 @@ public class GraphicalGameView extends GameView {
     /**
      * Private class for displaying the players disks.
      */
-    private static class PlayerIcon implements Icon {
+    public static class PlayerIcon implements Icon {
         private final Color color;
 
-        PlayerIcon(Color color) {
+        public PlayerIcon(Color color) {
             this.color = color;
         }
 
