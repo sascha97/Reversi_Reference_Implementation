@@ -62,8 +62,10 @@ public class ConsoleGameView extends GameView {
                 //The scanner to get the input from the console
                 Scanner scanner = new Scanner(System.in);
 
-                //Endless loop is wanted because the program is ended otherwise
-                while (true) {
+                //if program should be exited set running to false
+                boolean running = true;
+                //input thread should run until user wants to exit the program
+                while (running) {
                     //Store the user input in a variable variable
                     userInput = scanner.nextLine().trim().toLowerCase();
 
@@ -76,6 +78,9 @@ public class ConsoleGameView extends GameView {
                         //if a game should be exited do so
                     } else if (userInput.contains(RES.getString("control.exit"))) {
                         gameController.handleUserAction(GameController.GameAction.END_GAME);
+                        displayPlayerStatus();
+                        //set running false so that input loop is ended
+                        running = false;
                         //if a move should be taken back do so
                     } else if (userInput.contains(RES.getString("control.take.back"))) {
                         gameController.handleUserAction(GameController.GameAction.TAKEBACK);
@@ -163,15 +168,23 @@ public class ConsoleGameView extends GameView {
 
         //if game is finished display the statistics to the user
         if (!gameModel.hasGameAnyLegalMoves()) {
-            String whitePlayer = String.format(RES.getString("ui.label.player.white"),
-                    this.gameModel.getNumberOfPieces(Player.WHITE));
-
-            String blackPlayer = String.format(RES.getString("ui.label.player.black"),
-                    this.gameModel.getNumberOfPieces(Player.BLACK));
-
-            displayMessage(whitePlayer);
-            displayMessage(blackPlayer);
+            //display the status of all players
+            displayPlayerStatus();
         }
+    }
+
+    private void displayPlayerStatus() {
+        //get the white player status from the resource bundle and insert the number of white disks
+        String whitePlayerStatus = String.format(RES.getString("ui.label.player.white"),
+                gameModel.getNumberOfPieces(Player.WHITE));
+        //get the black player status from the resource bundle and insert the nubmer of black disks
+        String blackPlayerStatus = String.format(RES.getString("ui.label.player.black"),
+                gameModel.getNumberOfPieces(Player.BLACK));
+
+        //Display the white player status
+        displayMessage(whitePlayerStatus);
+        //display the black player status
+        displayMessage(blackPlayerStatus);
     }
 
     /**
