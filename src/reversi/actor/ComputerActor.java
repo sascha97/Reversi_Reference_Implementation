@@ -25,7 +25,7 @@ import reversi.player.Player;
  */
 public abstract class ComputerActor extends Actor {
     //The depth of how many GamePositions will be evaluated.
-    private final int DEPTH;
+    private int DEPTH;
 
     //How any GamePosition will be evaluated.
     private final Evaluation evaluation;
@@ -37,11 +37,17 @@ public abstract class ComputerActor extends Actor {
     ComputerActor(String name) {
         super(name);
 
+        refreshActor();
+
+        //Use the mobility evaluation for all computer actors.
+        evaluation = new MobilityEvaluation();
+    }
+
+    @Override
+    public void refreshActor() {
         //Get the configuration and load the search depth from the config file.
         ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
         DEPTH = Integer.parseInt(config.getProperty(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, "5"));
-        //Use the mobility evaluation for all computer actors.
-        evaluation = new MobilityEvaluation();
     }
 
     /**

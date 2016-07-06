@@ -177,7 +177,7 @@ public class ConsoleGameView extends GameView {
         //get the white player status from the resource bundle and insert the number of white disks
         String whitePlayerStatus = String.format(RES.getString("ui.label.player.white"),
                 gameModel.getNumberOfPieces(Player.WHITE));
-        //get the black player status from the resource bundle and insert the nubmer of black disks
+        //get the black player status from the resource bundle and insert the number of black disks
         String blackPlayerStatus = String.format(RES.getString("ui.label.player.black"),
                 gameModel.getNumberOfPieces(Player.BLACK));
 

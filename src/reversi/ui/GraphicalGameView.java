@@ -22,6 +22,9 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -107,6 +110,37 @@ public class GraphicalGameView extends GameView {
 
         //Set the title for the window
         frame = new JFrame(RES.getString("ui.window.title"));
+
+        //create a new menu bar
+        JMenuBar menuBar = new JMenuBar();
+        //create file menu
+        JMenu menuFile = new JMenu(RES.getString("ui.menu.bar.file"));
+        //create settings menu item
+        JMenuItem menuItemSettings = new JMenuItem(RES.getString("ui.menu.bar.file.settings"));
+        //Add to file menu
+        menuFile.add(menuItemSettings);
+        //Add to menu bar
+        menuBar.add(menuFile);
+
+        //add the action to the menu item settings
+        menuItemSettings.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //open a new preference window
+                GraphicalGamePreferences preferences = new GraphicalGamePreferences(frame);
+                //if preferences have changed please update the ui as well
+                if (preferences.hasConfigurationChanged()) {
+                    //update the icons
+                    updatePlayerIcons();
+                    //update the current game information panel as well
+                    updateGameInformation();
+                    //update the board so that the new icons are applied
+                    updateBoard();
+                }
+            }
+        });
+
+        frame.setJMenuBar(menuBar);
 
         //Add the components to the window
         JPanel root = new JPanel(new BorderLayout());
@@ -298,7 +332,7 @@ public class GraphicalGameView extends GameView {
             public void actionPerformed(ActionEvent e) {
                 //Disable input even when it would not make any sense
                 disableInput();
-                //controler to handle the game action
+                //controller to handle the game action
                 gameController.handleUserAction(GameController.GameAction.TAKEBACK);
             }
         });
@@ -306,7 +340,7 @@ public class GraphicalGameView extends GameView {
         buttonNewGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Enable the buttons that should be clickable again
+                //Enable the buttons that should be click able again
                 buttonResign.setEnabled(true);
                 buttonTakeBack.setEnabled(true);
                 //input no longer needed
@@ -319,7 +353,7 @@ public class GraphicalGameView extends GameView {
         buttonResign.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Disable the buttons that should not be clickable any more
+                //Disable the buttons that should not be click able any more
                 buttonTakeBack.setEnabled(false);
                 buttonResign.setEnabled(false);
                 //Input no longer needed

@@ -37,6 +37,9 @@ public abstract class Actor {
         return this.name;
     }
 
+    public void refreshActor() {
+    }
+
     /**
      * This method should return the Strategy of the Actor.
      *

@@ -24,17 +24,20 @@ import java.util.List;
  * @version 1.0 - 22. May 2016
  */
 public class ReversiBoard implements Board {
-    private final int BOARD_SIZE;
-    //The squares of the board
-    private final Square[][] squares;
+    private final static int BOARD_SIZE;
 
-    public ReversiBoard() {
+    static {
         //Load board size from configuration
         ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
         //Load a board size from the configuration, if no value is available use 8 as default size
         String sBoardSize = configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8");
         BOARD_SIZE = Integer.parseInt(sBoardSize);
+    }
 
+    //The squares of the board
+    private final Square[][] squares;
+
+    public ReversiBoard() {
         //initialize the array
         squares = new Square[BOARD_SIZE][BOARD_SIZE];
 

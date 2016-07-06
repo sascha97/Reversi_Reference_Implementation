@@ -68,6 +68,12 @@ public class ActorsPair {
         setActor(player.getOpponent(), computerActor);
     }
 
+    public void refreshAllActors() {
+        for (Actor actor : actors.values()) {
+            actor.refreshActor();
+        }
+    }
+
     /**
      * This method sets an actor to a given player.
      *

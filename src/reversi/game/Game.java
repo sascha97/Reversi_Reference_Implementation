@@ -94,6 +94,9 @@ public abstract class Game extends Observable {
         //Set up the human player if the configuration was changed after the game was loaded set the human player now
         ACTORS_PAIR.setHumanPlayer(determineHumanPlayer());
 
+        //refresh the actors
+        ACTORS_PAIR.refreshAllActors();
+
         //Call the method on start new game so that subclasses are able to handle start game stuff.
         onStartNewGame();
     }
