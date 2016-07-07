@@ -7,6 +7,7 @@
  */
 package reversi.ui;
 
+import reversi.game.ReversiGame;
 import reversi.game.ReversiGameConfiguration;
 
 import javax.swing.BorderFactory;
@@ -22,6 +23,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.colorchooser.ColorSelectionModel;
@@ -30,12 +33,20 @@ import javax.swing.event.ChangeListener;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * Add a description here...
@@ -43,7 +54,7 @@ import java.util.ResourceBundle;
  * @author Sascha Lutzenberger
  * @version 1.0 - 06. July 2016
  */
-class GraphicalGamePreferences {
+public class GraphicalGamePreferences {
     //the configuration of the game
     private final ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
 
@@ -62,26 +73,25 @@ class GraphicalGamePreferences {
     private JPanel panelPlayerSettings;
     //settings concerning whether the human player is black or white
     private JPanel panelHumanPlayerSettings;
+    //the panel containing the save configuration and cancel button
+    private JPanel panelStoreCurrentConfiguration;
 
     //The icons that are drawn on the configuration ui
     private Icon ICON_PLAYER_WHITE;
     private Icon ICON_PLAYER_BLACK;
 
-    //The strings containing the string values of the color
-    private String stringColorWhitePlayer;
-    private String stringColorBlackPlayer;
-
     //boolean flag used to check if the configuration has changed.
     private boolean hasConfigurationChanged = false;
 
-    GraphicalGamePreferences(JFrame parent) {
-        //Load the color values of the icons from the configuration
-        stringColorWhitePlayer = getValueFromReversiGameConfiguration(
-                ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
-        stringColorBlackPlayer = getValueFromReversiGameConfiguration(
-                ReversiGameConfiguration.PLAYER_BLACK_COLOR, "0xFF0000");
+    //the map containing all preferences of this preference dialog
+    private Map<String, String> preferenceMap;
+
+    public GraphicalGamePreferences(JFrame parent) {
+        //Load all the values from the configuration to the map containing all preferences
+        initializePreferencesMap();
+
         //set the player icons
-        refreshPlayerIcons(stringColorWhitePlayer, stringColorBlackPlayer);
+        refreshPlayerIcons();
 
         //initialize the panel containing the board settings
         initializeBoardSettings();
@@ -91,6 +101,8 @@ class GraphicalGamePreferences {
         initializeHumanPlayerSettings();
         //initialize the panel containing the player color settings
         initializePlayerSettings();
+        //initialize the panel containing the save button for the configuration
+        initializeSaveChangesPanel();
 
         //Set the title of the settings frame
         preferencesDialog = new JDialog(parent, RES.getString("ui.preferences.title"), true);
@@ -107,10 +119,13 @@ class GraphicalGamePreferences {
         rootPane.add(panelComputerPlayerSettings);
         rootPane.add(panelPlayerSettings);
         rootPane.add(panelHumanPlayerSettings);
+        rootPane.add(panelStoreCurrentConfiguration);
 
         //set the content frame to the window
         preferencesDialog.setContentPane(rootPane);
 
+        //set preference dialog not resizable
+        preferencesDialog.setResizable(false);
         //pack the window and make it visible
         preferencesDialog.pack();
         preferencesDialog.setLocationRelativeTo(parent);
@@ -127,11 +142,38 @@ class GraphicalGamePreferences {
     }
 
     /**
+     * This method is used to initialize the preferences map that holds all the preferences
+     * that can be set in this window
+     */
+    private void initializePreferencesMap() {
+        //create a new hash map for the preferences
+        preferenceMap = new HashMap<>();
+
+        //Load all the used values from the configuration and store them in the preference map
+        String blackPlayerColor = getValueFromReversiGameConfiguration(
+                ReversiGameConfiguration.PLAYER_BLACK_COLOR, "0xFF0000");
+        String whitePlayerColor = getValueFromReversiGameConfiguration(
+                ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
+        String boardSize = getValueFromReversiGameConfiguration(
+                ReversiGameConfiguration.BOARD_SIZE, "8");
+        String algorithmSearchDepth = getValueFromReversiGameConfiguration(
+                ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, "5");
+        String humanPlayerColor = getValueFromReversiGameConfiguration(
+                ReversiGameConfiguration.HUMAN_PLAYER_COLOR, "black");
+
+        preferenceMap.put(ReversiGameConfiguration.PLAYER_BLACK_COLOR, blackPlayerColor);
+        preferenceMap.put(ReversiGameConfiguration.PLAYER_WHITE_COLOR, whitePlayerColor);
+        preferenceMap.put(ReversiGameConfiguration.BOARD_SIZE, boardSize);
+        preferenceMap.put(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, algorithmSearchDepth);
+        preferenceMap.put(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, humanPlayerColor);
+    }
+
+    /**
      * This method is used to initialize the panel containing the board settings
      */
     private void initializeBoardSettings() {
         //create a new board setting panel with a grid layout
-        panelBoardSettings = new JPanel(new GridLayout(1, 2, 10, 10));
+        panelBoardSettings = new JPanel(new GridLayout(1, 1, 10, 10));
         //set the boarder
         panelBoardSettings.setBorder(BorderFactory.createTitledBorder(RES.getString("ui.preferences.title.board")));
 
@@ -154,24 +196,18 @@ class GraphicalGamePreferences {
         //add the slider to the panel
         panelBoardSettings.add(sliderBoardSize);
 
-
-        //the button that has to be clicked to apply the settings
-        JButton buttonSaveChanges = new JButton(RES.getString("ui.preferences.store"));
-
-        //add an action listener to the button so that the new size is applied to the configuration
-        buttonSaveChanges.addActionListener(new ActionListener() {
+        //if the slider changes refresh the map where everything is stored
+        sliderBoardSize.addChangeListener(new ChangeListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //get the value from the slider
-                int newBoardSize = sliderBoardSize.getValue();
-
-                //set the new value to the configuration
-                changeReversiGameConfiguration(ReversiGameConfiguration.BOARD_SIZE, newBoardSize);
+            public void stateChanged(ChangeEvent e) {
+                //The slider where the current value is stored
+                JSlider slider = (JSlider) e.getSource();
+                //get the current value as string
+                String currentValue = Integer.toString(slider.getValue());
+                //change the corresponding map value
+                preferenceMap.put(ReversiGameConfiguration.BOARD_SIZE, currentValue);
             }
         });
-
-        //add the button to the panel
-        panelBoardSettings.add(buttonSaveChanges);
     }
 
     /**
@@ -179,7 +215,7 @@ class GraphicalGamePreferences {
      */
     private void initializeComputerPlayerSettings() {
         //create a new computer player setting panel with a grid layout
-        panelComputerPlayerSettings = new JPanel(new GridLayout(1, 2, 10, 10));
+        panelComputerPlayerSettings = new JPanel(new GridLayout(1, 1, 10, 10));
         //set the boarder
         panelComputerPlayerSettings.setBorder(BorderFactory.createTitledBorder(
                 RES.getString("ui.preferences.title.algorithm")));
@@ -205,23 +241,18 @@ class GraphicalGamePreferences {
         //add the slider to the panel
         panelComputerPlayerSettings.add(sliderComputerPlayer);
 
-        //the button that has to be clicked to apply the settings
-        JButton buttonSaveChanges = new JButton(RES.getString("ui.preferences.store"));
-
-        //add an action listener to the button so that the search depth is applied to the configuration
-        buttonSaveChanges.addActionListener(new ActionListener() {
+        //if the slider changes refresh the map where everything is stored
+        sliderComputerPlayer.addChangeListener(new ChangeListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //get the value from the slider
-                int algorithmSearchDepth = sliderComputerPlayer.getValue();
-
-                //set the new value to the configuration
-                changeReversiGameConfiguration(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, algorithmSearchDepth);
+            public void stateChanged(ChangeEvent e) {
+                //The slider where the current value is stored
+                JSlider slider = (JSlider) e.getSource();
+                //get the current value as string
+                String currentValue = Integer.toString(slider.getValue());
+                //change the corresponding map value
+                preferenceMap.put(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, currentValue);
             }
         });
-
-        //add the button to the panel
-        panelComputerPlayerSettings.add(buttonSaveChanges);
     }
 
     /**
@@ -235,7 +266,7 @@ class GraphicalGamePreferences {
                 RES.getString("ui.preferences.title.player")));
 
         //Create Radio Buttons for the player
-        JRadioButton buttonPlayerBlack = new JRadioButton(RES.getString("ui.preferences.player.black"));
+        final JRadioButton buttonPlayerBlack = new JRadioButton(RES.getString("ui.preferences.player.black"));
         //add the action command string to the button (this is the value of the config file)
         buttonPlayerBlack.setActionCommand("black");
         JRadioButton buttonWhitePlayer = new JRadioButton(RES.getString("ui.preferences.player.white"));
@@ -261,23 +292,26 @@ class GraphicalGamePreferences {
             buttonWhitePlayer.setSelected(true);
         }
 
-        //the button that has to be clicked to apply the settings
-        JButton buttonSaveChanges = new JButton(RES.getString("ui.preferences.store"));
-
-        //add an action listener to the button so that the human player color is applied to the configuration
-        buttonSaveChanges.addActionListener(new ActionListener() {
+        //if the button gains a focus change the map
+        FocusListener humanPlayerListener = new FocusListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //get the value of the human player from the player group
-                String humanPlayerColor = playerGroup.getSelection().getActionCommand();
-
-                //store the new value in the configuration
-                changeReversiGameConfiguration(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, humanPlayerColor);
+            public void focusGained(FocusEvent e) {
+                //The radio button where the current human player color value is stored
+                JRadioButton button = (JRadioButton) e.getSource();
+                //get the current human player color value
+                String humanPlayerColor = button.getActionCommand();
+                //change the corresponding map value
+                preferenceMap.put(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, humanPlayerColor);
             }
-        });
 
-        //add the button to the panel
-        panelHumanPlayerSettings.add(buttonSaveChanges);
+            @Override
+            public void focusLost(FocusEvent e) {
+                //nothing should be done when focus is lost
+            }
+        };
+
+        buttonPlayerBlack.addFocusListener(humanPlayerListener);
+        buttonWhitePlayer.addFocusListener(humanPlayerListener);
     }
 
 
@@ -286,48 +320,56 @@ class GraphicalGamePreferences {
      */
     private void initializePlayerSettings() {
         //create a new player setting panel with a grid layout
-        panelPlayerSettings = new JPanel(new GridLayout(3, 2, 10, 10));
+        panelPlayerSettings = new JPanel(new GridBagLayout());
+        //constraints for the gird bag layout
+        GridBagConstraints constraints = new GridBagConstraints();
+
         //set the boarder
         panelPlayerSettings.setBorder(BorderFactory.createTitledBorder(
                 RES.getString("ui.preferences.title.change.color")));
 
         //Create the label and the button for the white player
         final JLabel labelPlayerWhite = new JLabel(ICON_PLAYER_WHITE);
+        labelPlayerWhite.setPreferredSize(new Dimension(60, 60));
         JButton buttonChangeWhiteColor = new JButton(RES.getString("ui.preferences.change.color"));
-
-        //Add the label and the button to the panel
-        panelPlayerSettings.add(labelPlayerWhite);
-        panelPlayerSettings.add(buttonChangeWhiteColor);
 
         //Create the label and the button for the black player
         final JLabel labelPlayerBlack = new JLabel(ICON_PLAYER_BLACK);
+        labelPlayerBlack.setPreferredSize(new Dimension(60, 60));
         JButton buttonChangeBlackColor = new JButton(RES.getString("ui.preferences.change.color"));
 
-        //Add the label and the button to the panel
-        panelPlayerSettings.add(labelPlayerBlack);
-        panelPlayerSettings.add(buttonChangeBlackColor);
+        //set up the constraints of the panel
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        //Add the labels to the panel
+        panelPlayerSettings.add(labelPlayerBlack, constraints);
+        constraints.gridx = 1;
+        panelPlayerSettings.add(labelPlayerWhite, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        //Add the buttons to the panel
+        panelPlayerSettings.add(buttonChangeBlackColor, constraints);
+        constraints.gridx = 1;
+        panelPlayerSettings.add(buttonChangeWhiteColor, constraints);
 
         //the action listener for the white color button
         buttonChangeWhiteColor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //get the color from the color picker
-                Color color = Color.decode(stringColorWhitePlayer);
+                Color color = Color.decode(preferenceMap.get(ReversiGameConfiguration.PLAYER_WHITE_COLOR));
                 color = getNewPlayerColor(color);
 
                 //get the hex code of the color
                 String newColor = getHexCode(color);
-                //if color has changed
-                if (!newColor.equalsIgnoreCase(stringColorWhitePlayer)) {
-                    //write the new color to the string
-                    stringColorWhitePlayer = newColor;
-                    //refresh the icons
-                    refreshPlayerIcons(stringColorWhitePlayer, stringColorBlackPlayer);
 
-                    //set the icons
-                    labelPlayerWhite.setIcon(ICON_PLAYER_WHITE);
-                    labelPlayerBlack.setIcon(ICON_PLAYER_BLACK);
-                }
+                //write the new color to the string
+                preferenceMap.put(ReversiGameConfiguration.PLAYER_WHITE_COLOR, newColor);
+                //refresh the icons
+                refreshPlayerIcons();
+                //set the icon
+                labelPlayerWhite.setIcon(ICON_PLAYER_WHITE);
             }
         });
 
@@ -336,57 +378,74 @@ class GraphicalGamePreferences {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //get the color from the color picker
-                Color color = Color.decode(stringColorBlackPlayer);
+                Color color = Color.decode(preferenceMap.get(ReversiGameConfiguration.PLAYER_BLACK_COLOR));
                 color = getNewPlayerColor(color);
 
                 //get the hex code of the color
                 String newColor = getHexCode(color);
-                //if color has changed
-                if (!newColor.equalsIgnoreCase(stringColorBlackPlayer)) {
-                    //write the new color to the string
-                    stringColorBlackPlayer = newColor;
-                    //refresh the icons
-                    refreshPlayerIcons(stringColorWhitePlayer, stringColorBlackPlayer);
 
-                    //set the icons
-                    labelPlayerWhite.setIcon(ICON_PLAYER_WHITE);
-                    labelPlayerBlack.setIcon(ICON_PLAYER_BLACK);
-                }
+                //write the new color to the string
+                preferenceMap.put(ReversiGameConfiguration.PLAYER_BLACK_COLOR, newColor);
+                //refresh the icons
+                refreshPlayerIcons();
+                //set the icon
+                labelPlayerBlack.setIcon(ICON_PLAYER_BLACK);
             }
         });
+    }
 
+    /**
+     * This method is used to initialize the panel containing the save changes
+     */
+    private void initializeSaveChangesPanel() {
+        panelStoreCurrentConfiguration = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton buttonSaveConfig = new JButton(RES.getString("ui.preferences.store"));
+        JButton buttonCancel = new JButton(RES.getString("ui.preferences.cancel"));
 
-        //add an empty panel to the layout so that the button is on the right side
-        JPanel blankPanel = new JPanel();
-        panelPlayerSettings.add(blankPanel);
+        panelStoreCurrentConfiguration.add(buttonCancel);
+        panelStoreCurrentConfiguration.add(buttonSaveConfig);
 
-        //the button that has to be clicked to apply the settings
-        JButton buttonSaveChanges = new JButton(RES.getString("ui.preferences.store"));
-
-        //add an action listener to the button so that the new color values are applied to the configuration
-        buttonSaveChanges.addActionListener(new ActionListener() {
+        buttonCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                changeReversiGameConfiguration(ReversiGameConfiguration.PLAYER_BLACK_COLOR, stringColorBlackPlayer);
-                changeReversiGameConfiguration(ReversiGameConfiguration.PLAYER_WHITE_COLOR, stringColorWhitePlayer);
+                preferencesDialog.dispose();
             }
         });
-        //add the button to the panel
-        panelPlayerSettings.add(buttonSaveChanges);
+
+        buttonSaveConfig.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveChangesToReversiGameConfiguration();
+                preferencesDialog.dispose();
+            }
+        });
+    }
+
+    /**
+     * This method is used to store the changed prefernces to the game config
+     */
+    private void saveChangesToReversiGameConfiguration() {
+        //Get all the setted keys of the preference map
+        Set<String> keys = preferenceMap.keySet();
+
+        //for each key set the value to the reversi game configuration
+        for (String key : keys) {
+            changeReversiGameConfiguration(key, preferenceMap.get(key));
+        }
+
+        //set the flag that the config has chagned
+        hasConfigurationChanged = true;
     }
 
     /**
      * Refreshes the player icons
-     *
-     * @param colorWhite A hex string containing the color value of the white player
-     * @param colorBlack A hex string containing the color value of the black player
      */
-    private void refreshPlayerIcons(String colorWhite, String colorBlack) {
+    private void refreshPlayerIcons() {
         //decode the white hex string
-        Color whitePlayer = Color.decode(colorWhite);
+        Color whitePlayer = Color.decode(preferenceMap.get(ReversiGameConfiguration.PLAYER_WHITE_COLOR));
         ICON_PLAYER_WHITE = new GraphicalGameView.PlayerIcon(whitePlayer);
 
-        Color blackPlayer = Color.decode(colorBlack);
+        Color blackPlayer = Color.decode(preferenceMap.get(ReversiGameConfiguration.PLAYER_BLACK_COLOR));
         ICON_PLAYER_BLACK = new GraphicalGameView.PlayerIcon(blackPlayer);
     }
 
