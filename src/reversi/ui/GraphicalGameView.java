@@ -95,11 +95,11 @@ public class GraphicalGameView extends GameView {
     public GraphicalGameView(Game gameModel) {
         super(gameModel);
 
-        updatePlayerIcons();
-
         //Get the dimension of the board from the model.
         BOARD_WIDTH = gameModel.getGamePosition().getBoard().getBoardWidth();
         BOARD_HEIGHT = gameModel.getGamePosition().getBoard().getBoardHeight();
+
+        updatePlayerIcons();
 
         //Crate the buttons
         squares = new JButton[BOARD_WIDTH][BOARD_HEIGHT];
@@ -398,7 +398,8 @@ public class GraphicalGameView extends GameView {
         //frame is closable when the window is closed
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        frame.setLocationByPlatform(true);
+        //show window centered on screen
+        frame.setLocationRelativeTo(null);
 
         //frame is now visible
         frame.setVisible(true);
@@ -565,8 +566,8 @@ public class GraphicalGameView extends GameView {
         String colorWhite = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
 
         //Decode the color values from the hexadecimal input
-        ICON_BLACK_PLAYER = new PlayerIcon(Color.decode(colorBlack));
-        ICON_WHITE_PLAYER = new PlayerIcon(Color.decode(colorWhite));
+        ICON_BLACK_PLAYER = new PlayerIcon(Color.decode(colorBlack), DIMENSION.height);
+        ICON_WHITE_PLAYER = new PlayerIcon(Color.decode(colorWhite), DIMENSION.height);
 
         if (labelBlackPlayer != null) {
             labelBlackPlayer.setIcon(ICON_BLACK_PLAYER);
@@ -594,7 +595,7 @@ public class GraphicalGameView extends GameView {
             int yPos = constraints.gridy - 1;
 
             //Create the user input String
-            userInput = xPos + "" + yPos;
+            userInput = xPos + " " + yPos;
             //disable input again
             disableInput();
 
@@ -608,9 +609,11 @@ public class GraphicalGameView extends GameView {
      */
     public static class PlayerIcon implements Icon {
         private final Color color;
+        private final int size;
 
-        public PlayerIcon(Color color) {
+        public PlayerIcon(Color color, int size) {
             this.color = color;
+            this.size = size;
         }
 
         @Override
@@ -622,12 +625,12 @@ public class GraphicalGameView extends GameView {
 
         @Override
         public int getIconWidth() {
-            return 40;
+            return size - 20;
         }
 
         @Override
         public int getIconHeight() {
-            return 40;
+            return size - 20;
         }
     }
 

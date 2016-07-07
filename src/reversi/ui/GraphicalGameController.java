@@ -43,13 +43,12 @@ public class GraphicalGameController extends GameController {
         //trim the input
         userInput = userInput.trim().toLowerCase();
 
-        //Get the x and y position from the string
-        char cYPos = userInput.charAt(0);
-        char cXPos = userInput.charAt(1);
+        //split the user input
+        String[] coordinates = userInput.split(" ");
 
         //Convert to board coordinates
-        int yPos = cXPos - '0';
-        int xPos = cYPos - '0';
+        int yPos = Integer.parseInt(coordinates[1]);
+        int xPos = Integer.parseInt(coordinates[0]);
 
         //Get the square from the board and create a game move
         Square square = gameModel.getGamePosition().getBoard().getSquare(xPos, yPos);

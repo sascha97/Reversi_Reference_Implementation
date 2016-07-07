@@ -29,7 +29,7 @@ public class ReversiGame extends Game {
     private final List<GamePosition> gamePositionList;
 
     //The humanPlayer field
-    private final Player humanPlayer;
+    private Player humanPlayer;
 
     /**
      * Constructor of the ReversiGame.
@@ -41,9 +41,6 @@ public class ReversiGame extends Game {
 
         //Create empty game position list.
         gamePositionList = new ArrayList<>();
-
-        //Set the human player
-        humanPlayer = determineHumanPlayer();
 
         startNewGame();
     }
@@ -81,6 +78,10 @@ public class ReversiGame extends Game {
         ReversiBoard reversiBoard = new ReversiBoard();
         //clear the list so that all previous game positions will be deleted
         gamePositionList.clear();
+
+        //Set the human player
+        humanPlayer = determineHumanPlayer();
+
         //create a new GamePosition and set it as current gamePosition
         setGamePosition(new GamePosition(reversiBoard, Player.BLACK));
     }

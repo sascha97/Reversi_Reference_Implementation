@@ -7,7 +7,6 @@
  */
 package reversi.ui;
 
-import reversi.game.ReversiGame;
 import reversi.game.ReversiGameConfiguration;
 
 import javax.swing.BorderFactory;
@@ -23,8 +22,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.colorchooser.ColorSelectionModel;
@@ -63,6 +60,9 @@ public class GraphicalGamePreferences {
 
     //the frame containing all the preferences
     private final JDialog preferencesDialog;
+
+    //the dimension field
+    private final Dimension DIMENSION = new Dimension(60, 60);
 
     //The JPanels of the Preferences Panel
     //settings concerning the board and its size
@@ -330,12 +330,12 @@ public class GraphicalGamePreferences {
 
         //Create the label and the button for the white player
         final JLabel labelPlayerWhite = new JLabel(ICON_PLAYER_WHITE);
-        labelPlayerWhite.setPreferredSize(new Dimension(60, 60));
+        labelPlayerWhite.setPreferredSize(DIMENSION);
         JButton buttonChangeWhiteColor = new JButton(RES.getString("ui.preferences.change.color"));
 
         //Create the label and the button for the black player
         final JLabel labelPlayerBlack = new JLabel(ICON_PLAYER_BLACK);
-        labelPlayerBlack.setPreferredSize(new Dimension(60, 60));
+        labelPlayerBlack.setPreferredSize(DIMENSION);
         JButton buttonChangeBlackColor = new JButton(RES.getString("ui.preferences.change.color"));
 
         //set up the constraints of the panel
@@ -443,10 +443,10 @@ public class GraphicalGamePreferences {
     private void refreshPlayerIcons() {
         //decode the white hex string
         Color whitePlayer = Color.decode(preferenceMap.get(ReversiGameConfiguration.PLAYER_WHITE_COLOR));
-        ICON_PLAYER_WHITE = new GraphicalGameView.PlayerIcon(whitePlayer);
+        ICON_PLAYER_WHITE = new GraphicalGameView.PlayerIcon(whitePlayer, DIMENSION.height);
 
         Color blackPlayer = Color.decode(preferenceMap.get(ReversiGameConfiguration.PLAYER_BLACK_COLOR));
-        ICON_PLAYER_BLACK = new GraphicalGameView.PlayerIcon(blackPlayer);
+        ICON_PLAYER_BLACK = new GraphicalGameView.PlayerIcon(blackPlayer, DIMENSION.height);
     }
 
     private String getHexCode(Color color) {
