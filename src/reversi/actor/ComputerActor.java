@@ -33,6 +33,7 @@ package reversi.actor;
 import reversi.board.Board;
 import reversi.board.GameMove;
 import reversi.board.GamePosition;
+import reversi.evaluation.CountDifferenceEvaluation;
 import reversi.evaluation.Evaluation;
 import reversi.evaluation.MobilityEvaluation;
 import reversi.game.ReversiGameConfiguration;
@@ -54,8 +55,8 @@ public abstract class ComputerActor extends Actor {
     private final Evaluation evaluation;
 
     //Constants declaring the MAXIMAL and MINIMAL VALUE for WINNING OR LOOSING the ReversiGame.
-    final int WINNING_VALUE = 2_000_000_000;
-    final int LOOSING_VALUE = -2_000_000_000;
+    final int WINNING_VALUE = Integer.MAX_VALUE;
+    final int LOOSING_VALUE = Integer.MIN_VALUE;
 
     ComputerActor(String name) {
         super(name);
@@ -63,7 +64,7 @@ public abstract class ComputerActor extends Actor {
         refreshActor();
 
         //Use the mobility evaluation for all computer actors.
-        evaluation = new MobilityEvaluation();
+        evaluation = new CountDifferenceEvaluation();
     }
 
     @Override

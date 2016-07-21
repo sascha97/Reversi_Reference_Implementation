@@ -69,7 +69,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
- * Add a description here...
+ * This class is used for chaning the ReversiGameConfiguration in the User Interface
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 06. July 2016
@@ -532,16 +532,6 @@ public class GraphicalGamePreferences {
 
         //the configuration has changed
         hasConfigurationChanged = true;
-    }
-
-    /**
-     * This method is used to refresh the ReversiGameConfiguration
-     *
-     * @param key      The key of the value that should be changed.
-     * @param newValue The new value that should be assigned to the configuration.
-     */
-    private void changeReversiGameConfiguration(String key, int newValue) {
-        changeReversiGameConfiguration(key, "" + newValue);
     }
 
     private static class ColorTracker implements ActionListener {

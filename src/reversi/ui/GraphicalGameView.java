@@ -105,8 +105,6 @@ public class GraphicalGameView extends GameView {
     //the size of an square
     private final Dimension DIMENSION = new Dimension(60, 60);
 
-    //Used for synchronizing the results over two threads...
-    private final ThreadEvent resultsReady = new ThreadEvent();
     //The input of the user
     private String userInput;
 
@@ -630,11 +628,11 @@ public class GraphicalGameView extends GameView {
     /**
      * Private class for displaying the players disks.
      */
-    public static class PlayerIcon implements Icon {
+    static class PlayerIcon implements Icon {
         private final Color color;
         private final int size;
 
-        public PlayerIcon(Color color, int size) {
+        PlayerIcon(Color color, int size) {
             this.color = color;
             this.size = size;
         }
@@ -654,22 +652,6 @@ public class GraphicalGameView extends GameView {
         @Override
         public int getIconHeight() {
             return size - 20;
-        }
-    }
-
-    private static class ThreadEvent {
-        private final Object lock = new Object();
-
-        void await() throws InterruptedException {
-            synchronized (lock) {
-                lock.wait();
-            }
-        }
-
-        void signal() {
-            synchronized (lock) {
-                lock.notify();
-            }
         }
     }
 }

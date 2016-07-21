@@ -33,6 +33,7 @@ package reversi;
 import reversi.actor.Actor;
 import reversi.actor.AlphaBetaActor;
 import reversi.actor.HumanActor;
+import reversi.actor.MiniMaxActor;
 import reversi.game.Game;
 import reversi.game.ReversiGame;
 import reversi.player.ActorsPair;

@@ -51,6 +51,9 @@ public abstract class GameView implements Observer {
     //The resource bundle containing internationalized strings
     final ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
 
+    //Used for syncing data across multiple threads
+    final ThreadEvent resultsReady = new ThreadEvent();
+
     /**
      * The constructor to set up the game view
      *
@@ -96,5 +99,21 @@ public abstract class GameView implements Observer {
      */
     public void show() {
         gameController.play();
+    }
+
+    protected static class ThreadEvent {
+        private final Object lock = new Object();
+
+        void await() throws InterruptedException {
+            synchronized (lock) {
+                lock.wait();
+            }
+        }
+
+        void signal() {
+            synchronized (lock) {
+                lock.notify();
+            }
+        }
     }
 }

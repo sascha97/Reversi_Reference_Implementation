@@ -50,8 +50,6 @@ import java.util.Scanner;
  * @version 1.0 - 03. July 2016
  */
 public class ConsoleGameView extends GameView {
-    //Used for synchronizing the results over two threads...
-    private final ThreadEvent resultsReady = new ThreadEvent();
     //The input of the user.
     private String userInput;
 
@@ -245,22 +243,6 @@ public class ConsoleGameView extends GameView {
                 System.out.printf("%-2c", s);
             }
             System.out.println();
-        }
-    }
-
-    private static class ThreadEvent {
-        private final Object lock = new Object();
-
-        void await() throws InterruptedException {
-            synchronized (lock) {
-                lock.wait();
-            }
-        }
-
-        void signal() {
-            synchronized (lock) {
-                lock.notify();
-            }
         }
     }
 }
