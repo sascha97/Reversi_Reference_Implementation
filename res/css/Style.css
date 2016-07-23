@@ -33,7 +33,7 @@
     -fx-padding: 5 5 5 5;
 }
 
-.player-toggle {
+.radio-button-group {
     -fx-spacing: 10;
 }
 
@@ -48,7 +48,7 @@
     -fx-alignment: center-right;
 }
 
-.button-menu {
+#button-menu {
     -fx-min-width: 120;
     -fx-min-height: 30;
 }
@@ -56,13 +56,15 @@
 .circle {
     -fx-stroke: white;
     -fx-stroke-width: 4;
-
     -fx-stroke-line-cap: butt;
 }
 
-.vbox-game-information {
-    -fx-padding: 10 10 10 10;
+.vbox {
     -fx-spacing: 5;
+}
+
+#vbox-game-information {
+    -fx-padding: 10 10 10 10;
 }
 
 .board-grid-pane {
@@ -82,5 +84,17 @@
 
 .board-squares:disabled {
     -fx-background-color: green;
+    -fx-opacity: 1.0;
+}
+
+.board-squares-hidden {
+    -fx-min-height: 50;
+    -fx-min-width: 50;
+    -fx-padding: 5 5 5 5;
+    -fx-background-insets: 1 1 1 1;
+    -fx-background-color: green;
+}
+
+.board-squares-hidden:disabled {
     -fx-opacity: 1.0;
 }

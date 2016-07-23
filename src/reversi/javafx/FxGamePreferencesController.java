@@ -59,33 +59,49 @@ import java.util.Set;
  * @version 1.0 - 22. July 2016
  */
 public class FxGamePreferencesController implements Initializable {
+    /*
+  * Tab Board
+  */
     //the slider for the board size settings
     @FXML
     private Slider sliderBoardSize;
 
-    //the slider for the algorithm search depth settings
+    //the group which is used to distinguish if the coordinates of the board should be shown
     @FXML
-    private Slider sliderAlgorithmSearchDepth;
+    private ToggleGroup toggleGroupShowLegalMoves;
 
+    //the group which is used to distinguish if the animations of the board should be shown
+    @FXML
+    private ToggleGroup toggleGroupShowAnimations;
+    /*
+     * Tab Player
+     */
     //the group which is used to distinguish which player is the human player
     @FXML
-    private ToggleGroup player;
-
-    //the color picker that represents the color picked for the black player
-    @FXML
-    private ColorPicker blackColorPicker;
-
-    //the color picker that represents the color picked for the white player
-    @FXML
-    private ColorPicker whiteColorPicker;
+    private ToggleGroup toggleGroupHumanPlayer;
 
     //the preview circle for the black player
     @FXML
-    private Circle iconBlackPlayer;
+    private Circle circlePlayerBlack;
 
     //the preview circle for the white player
     @FXML
-    private Circle iconWhitePlayer;
+    private Circle circlePlayerWhite;
+
+    //the color picker that represents the color picked for the black player
+    @FXML
+    private ColorPicker colorPickerPlayerBlack;
+
+    //the color picker that represents the color picked for the white player
+    @FXML
+    private ColorPicker colorPickerPlayerWhite;
+
+    /*
+     * Tab Computer
+     */
+    //the slider for the algorithm search depth settings
+    @FXML
+    private Slider sliderAlgorithmSearchDepth;
 
     //The local map containing all configurations from the configuration
     private Map<String, String> preferenceMap;
@@ -100,37 +116,86 @@ public class FxGamePreferencesController implements Initializable {
     private Stage window;
 
     @Override
-    public void initialize(URL location, final ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources) {
         //create local copy of the preferences
         initializePreferenceMap();
 
-        //set up the color pickers
-        Color blackPlayerColor = Color.valueOf(preferenceMap.get(ReversiGameConfiguration.PLAYER_BLACK_COLOR));
-        blackColorPicker.setValue(blackPlayerColor);
-        Color whitePlayerColor = Color.valueOf(preferenceMap.get(ReversiGameConfiguration.PLAYER_WHITE_COLOR));
-        whiteColorPicker.setValue(whitePlayerColor);
+        //Bind the components to the config and to other properties
+        initializeTabBoard();
+        initializeTabPlayer();
+        initializeTabComputer();
+    }
 
-        //initialize the binding of the properties so that a changed color is refreshed automatically
-        iconBlackPlayer.fillProperty().bind(blackColorPicker.valueProperty());
-        iconWhitePlayer.fillProperty().bind(whiteColorPicker.valueProperty());
+    /**
+     * This method is called when ever the button cancel config is clicked
+     *
+     * @param event The event.
+     */
+    @FXML
+    private void buttonCancelClicked(ActionEvent event) {
+        //close the modal view
+        window.close();
+    }
 
-        //update the circle color as well
-        blackColorPicker.valueProperty().addListener(new ChangeListener<Color>() {
-            @Override
-            public void changed(ObservableValue<? extends Color> observable, Color oldValue, Color newValue) {
-                updateConfiguration(ReversiGameConfiguration.PLAYER_BLACK_COLOR, getColorForPreferences(newValue));
-            }
-        });
+    /**
+     * This method is called when ever the button save config is clicked
+     *
+     * @param event The event.
+     */
+    @FXML
+    private void buttonSaveConfigurationClicked(ActionEvent event) {
+        saveChangesToReversiGameConfiguration();
 
-        //update the circle color as well
-        whiteColorPicker.valueProperty().addListener(new ChangeListener<Color>() {
-            @Override
-            public void changed(ObservableValue<? extends Color> observable, Color oldValue, Color newValue) {
-                updateConfiguration(ReversiGameConfiguration.PLAYER_WHITE_COLOR, getColorForPreferences(newValue));
-            }
-        });
+        //close the modal view
+        window.close();
+    }
 
-        //set up the board size slider
+    /**
+     * Method is used to set the right window for the controller
+     *
+     * @param window The window in which the dialog should be displayed
+     */
+    public void initWindow(Stage window) {
+        this.window = window;
+    }
+
+    /**
+     * This method is used that it can be distinguished that a setting was changed
+     *
+     * @return true if the configuration has changed - false if the configuration has not changed
+     */
+    public boolean hasConfigurationChanged() {
+        return hasConfigurationChanged;
+    }
+
+    /**
+     * This method creates the local copy of the config entries that can be changed by this ui
+     */
+    private void initializePreferenceMap() {
+        preferenceMap = new HashMap<>();
+
+        //Load the values from the reversi game configuration
+        String algorithmDepth = configuration.getProperty(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, "5");
+        String boardSize = configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8");
+        String humanPlayerColor = configuration.getProperty(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, "black");
+        String blackPlayerColor = configuration.getProperty(ReversiGameConfiguration.PLAYER_BLACK_COLOR, "0xFF0000");
+        String whitePlayerColor = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
+        String showLegalMoves = configuration.getProperty(
+                ReversiGameConfiguration.USER_INTERFACE_SHOW_LEGAL_MOVES, "true");
+        String showAnimation = configuration.getProperty(
+                ReversiGameConfiguration.USER_INTERFACE_SHOW_ANIMATIONS, "true");
+
+        preferenceMap.put(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, algorithmDepth);
+        preferenceMap.put(ReversiGameConfiguration.BOARD_SIZE, boardSize);
+        preferenceMap.put(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, humanPlayerColor);
+        preferenceMap.put(ReversiGameConfiguration.PLAYER_BLACK_COLOR, blackPlayerColor);
+        preferenceMap.put(ReversiGameConfiguration.PLAYER_WHITE_COLOR, whitePlayerColor);
+        preferenceMap.put(ReversiGameConfiguration.USER_INTERFACE_SHOW_LEGAL_MOVES, showLegalMoves);
+        preferenceMap.put(ReversiGameConfiguration.USER_INTERFACE_SHOW_ANIMATIONS, showAnimation);
+    }
+
+    private void initializeTabBoard() {
+        //set up the algorithm search depth slider
         int boardSize = Integer.parseInt(preferenceMap.get(ReversiGameConfiguration.BOARD_SIZE));
         sliderBoardSize.setValue(boardSize);
 
@@ -140,12 +205,97 @@ public class FxGamePreferencesController implements Initializable {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 int currentValue = newValue.intValue();
 
+                //Make sure that only valid board sizes will be set
                 if (currentValue % 2 == 0) {
                     updateConfiguration(ReversiGameConfiguration.BOARD_SIZE, Integer.toString(currentValue));
                 }
             }
         });
 
+        //toggle the right item in show labels
+        String showLabels = preferenceMap.get(ReversiGameConfiguration.USER_INTERFACE_SHOW_LEGAL_MOVES);
+        for (Toggle toggle : toggleGroupShowLegalMoves.getToggles()) {
+            if (toggle.getUserData().equals(showLabels)) {
+                toggle.setSelected(true);
+            }
+        }
+
+        //update the local preference copy if the value changes
+        toggleGroupShowLegalMoves.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                String showCoordinates = newValue.getUserData().toString();
+
+                updateConfiguration(ReversiGameConfiguration.USER_INTERFACE_SHOW_LEGAL_MOVES, showCoordinates);
+            }
+        });
+
+        //toggle the right item in show animations
+        String showAnimations = preferenceMap.get(ReversiGameConfiguration.USER_INTERFACE_SHOW_ANIMATIONS);
+        for (Toggle toggle : toggleGroupShowAnimations.getToggles()) {
+            if (toggle.getUserData().equals(showAnimations)) {
+                toggle.setSelected(true);
+            }
+        }
+
+        //update the local preference copy if the value changes
+        toggleGroupShowAnimations.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                String showAnimations = newValue.getUserData().toString();
+
+                updateConfiguration(ReversiGameConfiguration.USER_INTERFACE_SHOW_ANIMATIONS, showAnimations);
+            }
+        });
+    }
+
+    private void initializeTabPlayer() {
+        //set up the color pickers
+        Color blackPlayerColor = Color.valueOf(preferenceMap.get(ReversiGameConfiguration.PLAYER_BLACK_COLOR));
+        colorPickerPlayerBlack.setValue(blackPlayerColor);
+        Color whitePlayerColor = Color.valueOf(preferenceMap.get(ReversiGameConfiguration.PLAYER_WHITE_COLOR));
+        colorPickerPlayerWhite.setValue(whitePlayerColor);
+
+        //initialize the binding of the properties so that a changed color is refreshed automatically
+        circlePlayerBlack.fillProperty().bind(colorPickerPlayerBlack.valueProperty());
+        circlePlayerWhite.fillProperty().bind(colorPickerPlayerWhite.valueProperty());
+
+        //update the local config if black color changes
+        colorPickerPlayerBlack.valueProperty().addListener(new ChangeListener<Color>() {
+            @Override
+            public void changed(ObservableValue<? extends Color> observable, Color oldValue, Color newValue) {
+                updateConfiguration(ReversiGameConfiguration.PLAYER_BLACK_COLOR, getColorForPreferences(newValue));
+            }
+        });
+
+        //update the local config if white color changes
+        colorPickerPlayerWhite.valueProperty().addListener(new ChangeListener<Color>() {
+            @Override
+            public void changed(ObservableValue<? extends Color> observable, Color oldValue, Color newValue) {
+                updateConfiguration(ReversiGameConfiguration.PLAYER_WHITE_COLOR, getColorForPreferences(newValue));
+            }
+        });
+
+        //Toggle the right item
+        String humanPlayerColor = preferenceMap.get(ReversiGameConfiguration.HUMAN_PLAYER_COLOR);
+        for (Toggle toggle : toggleGroupHumanPlayer.getToggles()) {
+            if (toggle.getUserData().equals(humanPlayerColor)) {
+                toggle.setSelected(true);
+            }
+        }
+
+        //refresh the local preference copy
+        toggleGroupHumanPlayer.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                String colorHumanPlayer = newValue.getUserData().toString();
+
+                updateConfiguration(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, colorHumanPlayer);
+            }
+        });
+    }
+
+    private void initializeTabComputer() {
         //set up the algorithm search depth slider
         int algorithmSearchDepth = Integer.parseInt(preferenceMap.get(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH));
         sliderAlgorithmSearchDepth.setValue(algorithmSearchDepth);
@@ -159,42 +309,6 @@ public class FxGamePreferencesController implements Initializable {
                 updateConfiguration(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, Integer.toString(currentValue));
             }
         });
-
-        //toggle the right item
-        String humanPlayerColor = preferenceMap.get(ReversiGameConfiguration.HUMAN_PLAYER_COLOR);
-        for (Toggle toggle : player.getToggles()) {
-            if (toggle.getUserData().equals(humanPlayerColor)) {
-                toggle.setSelected(true);
-            }
-        }
-
-        //refresh the local preference copy
-        player.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                String colorHumanPlayer = newValue.getUserData().toString();
-
-                updateConfiguration(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, colorHumanPlayer);
-            }
-        });
-    }
-
-    /**
-     * Method is used to set the right window for the controller
-     *
-     * @param window The window in which the dialog should be displayed
-     */
-    void initWindow(Stage window) {
-        this.window = window;
-    }
-
-    /**
-     * This method is used that it can be distinguished that a setting was changed
-     *
-     * @return true if the configuration has changed - false if the configuration has not changed
-     */
-    boolean hasConfigurationChanged() {
-        return hasConfigurationChanged;
     }
 
     /**
@@ -212,49 +326,6 @@ public class FxGamePreferencesController implements Initializable {
 
         //remove the opacity value (last two signs of hex code)
         return stringValue.substring(0, length - 2);
-    }
-
-    /**
-     * This method creates the local copy of the config entries that can be changed by this ui
-     */
-    private void initializePreferenceMap() {
-        preferenceMap = new HashMap<>();
-
-        String blackPlayerColor = configuration.getProperty(ReversiGameConfiguration.PLAYER_BLACK_COLOR, "0xFF0000");
-        String whitePlayerColor = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
-        String boardSize = configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8");
-        String algorithmDepth = configuration.getProperty(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, "5");
-        String humanPlayerColor = configuration.getProperty(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, "black");
-
-        preferenceMap.put(ReversiGameConfiguration.PLAYER_BLACK_COLOR, blackPlayerColor);
-        preferenceMap.put(ReversiGameConfiguration.PLAYER_WHITE_COLOR, whitePlayerColor);
-        preferenceMap.put(ReversiGameConfiguration.BOARD_SIZE, boardSize);
-        preferenceMap.put(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, algorithmDepth);
-        preferenceMap.put(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, humanPlayerColor);
-    }
-
-    /**
-     * This method is called when ever the button save config is clicked
-     *
-     * @param event The event.
-     */
-    @FXML
-    private void buttonSaveConfigurationClicked(ActionEvent event) {
-        saveChangesToReversiGameConfiguration();
-
-        //close the modal window
-        window.close();
-    }
-
-    /**
-     * This method is called when ever the button cancel config is clicked
-     *
-     * @param event The event.
-     */
-    @FXML
-    private void buttonCancelClicked(ActionEvent event) {
-        //close the modal window
-        window.close();
     }
 
     /**

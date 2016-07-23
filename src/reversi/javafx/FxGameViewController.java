@@ -45,7 +45,6 @@ import reversi.player.Player;
 import javafx.animation.FadeTransition;
 import javafx.animation.FillTransition;
 import javafx.animation.ScaleTransition;
-import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -97,6 +96,8 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
 
     private ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
 
+    private boolean showAnimations;
+
     private ResourceBundle resources;
 
     private String userInput;
@@ -124,6 +125,8 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
 
         initializeBoardPanel();
         initializeGameInformationPanel();
+        updateShowAnimations();
+        updateShowLegalMoves();
     }
 
     public void setGameModel(Game gameModel) {
@@ -226,6 +229,8 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
 
             updateBoard();
             updateCurrentPlayer();
+            updateShowAnimations();
+            updateShowLegalMoves();
         }
     }
 
@@ -275,7 +280,7 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
                 updateCurrentPlayer();
 
                 //get the internationalized format String for the number of disks
-                String format = resources.getString("ui.number.disks");
+                String format = resources.getString("ui.label.disk.number");
 
                 int numberWhiteDisks = gamePosition.getBoard().countPieces(Player.WHITE);
                 int numberBlackDisks = gamePosition.getBoard().countPieces(Player.BLACK);
@@ -301,6 +306,31 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
                 }
             }
         });
+    }
+
+    private void updateShowAnimations() {
+        String showAnimations = configuration.getProperty(
+                ReversiGameConfiguration.USER_INTERFACE_SHOW_ANIMATIONS, "true");
+
+        this.showAnimations = Boolean.parseBoolean(showAnimations);
+    }
+
+    private void updateShowLegalMoves() {
+        String sShowLegalMoves = configuration.getProperty(
+                ReversiGameConfiguration.USER_INTERFACE_SHOW_LEGAL_MOVES, "true");
+
+        boolean showLegalMoves = Boolean.parseBoolean(sShowLegalMoves);
+
+        String styleClass = showLegalMoves ? "board-squares" : "board-squares-hidden";
+        String removeStyleClass = showLegalMoves ? "board-squares-hidden" : "board-squares";
+
+        for (int x = 0; x < squares.length; x++) {
+            for (int y = 0; y < squares.length; y++) {
+                Button button = squares[x][y];
+                button.getStyleClass().removeAll(removeStyleClass);
+                button.getStyleClass().add(styleClass);
+            }
+        }
     }
 
     private void disableInput() {
@@ -403,47 +433,53 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
         }
 
         void setPlayerIcon(Paint value) {
-            Transition transition;
-
             if (getGraphic() == null) {
                 setGraphic(player);
                 player.setFill(value);
 
-                FadeTransition fadeTransition = new FadeTransition(Duration.millis(1000), player);
-                fadeTransition.setFromValue(0);
-                fadeTransition.setToValue(1);
+                if (showAnimations) {
+                    FadeTransition fadeTransition = new FadeTransition(Duration.millis(1000), player);
+                    fadeTransition.setFromValue(0);
+                    fadeTransition.setToValue(1);
 
-                fadeTransition.play();
+                    ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(500), player);
+                    scaleTransition.setFromX(0);
+                    scaleTransition.setFromY(0);
+                    scaleTransition.setToX(1);
+                    scaleTransition.setToY(1);
 
-                ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(500), player);
-                scaleTransition.setFromX(0);
-                scaleTransition.setFromY(0);
-                scaleTransition.setToX(1);
-                scaleTransition.setToY(1);
-                transition = scaleTransition;
+                    fadeTransition.play();
+                    scaleTransition.play();
+                }
+
             } else {
-                Color start = (Color) player.getFill();
-                Color end = (Color) value;
-                transition = new FillTransition(Duration.millis(1000), player, start, end);
+                if (showAnimations) {
+                    Color start = (Color) player.getFill();
+                    Color end = (Color) value;
+                    FillTransition fillTransition = new FillTransition(Duration.millis(1000), player, start, end);
+                    fillTransition.play();
+                } else {
+                    player.setFill(value);
+                }
             }
-
-            transition.play();
         }
 
         void removePlayerIcon() {
             if (getGraphic() != null) {
-                ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(1000), player);
-                scaleTransition.setToX(0);
-                scaleTransition.setToY(0);
+                if (showAnimations) {
+                    ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(1000), player);
+                    scaleTransition.setToX(0);
+                    scaleTransition.setToY(0);
 
-                scaleTransition.play();
+                    scaleTransition.play();
 
-                scaleTransition.setOnFinished(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        setGraphic(null);
-                    }
-                });
+                    scaleTransition.setOnFinished(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            setGraphic(null);
+                        }
+                    });
+                }
             } else {
                 setGraphic(null);
             }

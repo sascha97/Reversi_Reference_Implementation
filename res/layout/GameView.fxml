@@ -58,12 +58,12 @@
     </center>
 
     <right>
-        <VBox alignment="CENTER_RIGHT" styleClass="vbox-game-information">
-            <TitledPane collapsible="false" text="%ui.label.current.player">
+        <VBox alignment="CENTER_RIGHT" styleClass="vbox" id="vbox-game-information">
+            <TitledPane collapsible="false" text="%ui.title.player.current">
                 <Circle fx:id="currentPlayer" radius="25"/>
             </TitledPane>
 
-            <TitledPane collapsible="false" text="%ui.label.status.player">
+            <TitledPane collapsible="false" text="%ui.title.player.status">
                 <GridPane alignment="CENTER" styleClass="grid-pane">
                     <columnConstraints>
                         <ColumnConstraints halignment="CENTER" minWidth="120"/>
@@ -82,16 +82,16 @@
                 </GridPane>
             </TitledPane>
 
-            <TitledPane collapsible="false" text="%ui.label.menu">
+            <TitledPane collapsible="false" text="%ui.title.menu">
                 <GridPane styleClass="grid-pane">
-                    <Button text="%ui.label.resign" GridPane.columnIndex="0" GridPane.rowIndex="0"
-                            styleClass="button-menu" onAction="#buttonResignClicked"/>
-                    <Button text="%ui.label.take.back" GridPane.columnIndex="1" GridPane.rowIndex="0"
-                            styleClass="button-menu" onAction="#buttonTakeBackClicked"/>
-                    <Button text="%ui.label.new.game" GridPane.columnIndex="0" GridPane.rowIndex="1"
-                            styleClass="button-menu" onAction="#buttonStartNewGameClicked"/>
-                    <Button text="%ui.label.exit" GridPane.columnIndex="1" GridPane.rowIndex="1"
-                            styleClass="button-menu" onAction="#buttonEndGameClicked"/>
+                    <Button text="%ui.button.label.resign" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                            id="button-menu" onAction="#buttonResignClicked"/>
+                    <Button text="%ui.button.label.take.back" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                            id="button-menu" onAction="#buttonTakeBackClicked"/>
+                    <Button text="%ui.button.label.new.game" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                            id="button-menu" onAction="#buttonStartNewGameClicked"/>
+                    <Button text="%ui.button.label.exit" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                            id="button-menu" onAction="#buttonEndGameClicked"/>
                 </GridPane>
             </TitledPane>
         </VBox>

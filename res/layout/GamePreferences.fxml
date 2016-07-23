@@ -35,6 +35,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -43,49 +45,92 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import java.net.URL?>
-<VBox xmlns:fx="http://javafx.com/fxml" styleClass="vbox-game-information"
+<VBox xmlns:fx="http://javafx.com/fxml" styleClass="vbox"
       fx:controller="reversi.javafx.FxGamePreferencesController">
-    <TitledPane collapsible="false" text="%ui.preferences.title.board">
-        <Slider fx:id="sliderBoardSize" min="4" max="12" minorTickCount="0" majorTickUnit="2" showTickLabels="true"
-                showTickMarks="true" snapToTicks="true"/>
-    </TitledPane>
+    <TabPane>
+        <Tab text="%ui.preferences.tab.board.tab.heading" closable="false">
+            <VBox styleClass="vbox" id="vbox-game-information">
+                <TitledPane text="%ui.preferences.tab.board.title.board.size" collapsible="false">
+                    <Slider fx:id="sliderBoardSize" min="4" max="12" minorTickCount="0" majorTickUnit="2"
+                            showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
+                </TitledPane>
+                <TitledPane text="%ui.preferences.tab.board.title.legal.moves" collapsible="false">
+                    <fx:define>
+                        <ToggleGroup fx:id="toggleGroupShowLegalMoves"/>
+                    </fx:define>
 
-    <TitledPane collapsible="false" text="%ui.preferences.title.algorithm">
-        <Slider fx:id="sliderAlgorithmSearchDepth" min="2" max="16" minorTickCount="1" majorTickUnit="2"
-                showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
-    </TitledPane>
+                    <HBox styleClass="radio-button-group">
+                        <RadioButton text="%ui.preferences.label.show"
+                                     toggleGroup="$toggleGroupShowLegalMoves" userData="true"/>
+                        <RadioButton text="%ui.preferences.label.hide"
+                                     toggleGroup="$toggleGroupShowLegalMoves" userData="false"/>
+                    </HBox>
+                </TitledPane>
 
-    <TitledPane collapsible="false" text="%ui.preferences.title.change.color">
-        <GridPane styleClass="grid-pane">
-            <columnConstraints>
-                <ColumnConstraints halignment="CENTER"/>
-                <ColumnConstraints halignment="CENTER"/>
-            </columnConstraints>
+                <TitledPane collapsible="false" text="%ui.preferences.tab.board.title.animations">
+                    <fx:define>
+                        <ToggleGroup fx:id="toggleGroupShowAnimations"/>
+                    </fx:define>
+                    <HBox styleClass="radio-button-group">
+                        <RadioButton text="%ui.preferences.label.show"
+                                     toggleGroup="$toggleGroupShowAnimations" userData="true"/>
+                        <RadioButton text="%ui.preferences.label.hide"
+                                     toggleGroup="$toggleGroupShowAnimations" userData="false"/>
+                    </HBox>
+                </TitledPane>
+            </VBox>
+        </Tab>
 
-            <Label text="%ui.preferences.player.black" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-            <Label text="%ui.preferences.player.white" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Tab text="%ui.preferences.tab.player.tab.heading" closable="false">
+            <VBox styleClass="vbox" id="vbox-game-information">
+                <TitledPane text="%ui.preferences.tab.player.title.change.color" collapsible="false">
+                    <GridPane styleClass="grid-pane">
+                        <columnConstraints>
+                            <ColumnConstraints halignment="CENTER"/>
+                            <ColumnConstraints halignment="CENTER"/>
+                        </columnConstraints>
 
-            <Circle fx:id="iconBlackPlayer" radius="25" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <Circle fx:id="iconWhitePlayer" radius="25" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Label text="%ui.preferences.label.player.black"
+                               GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="%ui.preferences.label.player.white"
+                               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-            <ColorPicker fx:id="blackColorPicker" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-            <ColorPicker fx:id="whiteColorPicker" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        </GridPane>
-    </TitledPane>
+                        <Circle fx:id="circlePlayerBlack" radius="25" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Circle fx:id="circlePlayerWhite" radius="25" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <TitledPane collapsible="false" text="%ui.preferences.title.player">
-        <fx:define>
-            <ToggleGroup fx:id="player"/>
-        </fx:define>
-        <HBox styleClass="player-toggle" alignment="CENTER">
-            <RadioButton text="%ui.preferences.player.white" toggleGroup="$player" userData="white"/>
-            <RadioButton text="%ui.preferences.player.black" toggleGroup="$player" userData="black"/>
-        </HBox>
-    </TitledPane>
+                        <ColorPicker fx:id="colorPickerPlayerBlack" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <ColorPicker fx:id="colorPickerPlayerWhite" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    </GridPane>
+                </TitledPane>
 
-    <HBox styleClass="button-row">
-        <Button text="%ui.preferences.cancel" cancelButton="true" onAction="#buttonCancelClicked"/>
-        <Button text="%ui.preferences.store" defaultButton="true" onAction="#buttonSaveConfigurationClicked"/>
+                <TitledPane text="%ui.preferences.tab.player.title.human.color" collapsible="false">
+                    <fx:define>
+                        <ToggleGroup fx:id="toggleGroupHumanPlayer"/>
+                    </fx:define>
+                    <HBox styleClass="radio-button-group" alignment="CENTER">
+                        <RadioButton text="%ui.preferences.label.player.white"
+                                     toggleGroup="$toggleGroupHumanPlayer" userData="white"/>
+                        <RadioButton text="%ui.preferences.label.player.black"
+                                     toggleGroup="$toggleGroupHumanPlayer" userData="black"/>
+                    </HBox>
+                </TitledPane>
+            </VBox>
+        </Tab>
+
+
+        <Tab text="%ui.preferences.tab.computer.tab.heading" closable="false">
+            <VBox styleClass="vbox" id="vbox-game-information">
+                <TitledPane collapsible="false" text="%ui.preferences.tab.computer.title.algorithm">
+                    <Slider fx:id="sliderAlgorithmSearchDepth" min="2" max="16" minorTickCount="1" majorTickUnit="2"
+                            showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
+                </TitledPane>
+            </VBox>
+        </Tab>
+    </TabPane>
+
+    <HBox styleClass="button-row" id="vbox-game-information">
+        <Button text="%ui.preferences.button.cancel" cancelButton="true" onAction="#buttonCancelClicked"/>
+        <Button text="%ui.preferences.button.save" defaultButton="true" onAction="#buttonSaveConfigurationClicked"/>
     </HBox>
 
     <stylesheets>
