@@ -28,39 +28,78 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package reversi;
 
-import reversi.actor.Actor;
-import reversi.actor.AlphaBetaActor;
+package reversi.javafx;
+
 import reversi.actor.HumanActor;
 import reversi.game.Game;
-import reversi.game.ReversiGame;
-import reversi.player.ActorsPair;
-import reversi.ui.GameController;
-import reversi.ui.GameView;
-import reversi.ui.GraphicalGameController;
-import reversi.ui.GraphicalGameView;
+
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
+import java.io.IOException;
+import java.util.ResourceBundle;
 
 /**
- * This is the main class setting up the program and connecting the model, view and the controller
+ * Add a description
  *
  * @author Sascha Lutzenberger
- * @version 1.0 - 21. May 2016
+ * @version 1.0 - 23. July 2016
  */
-public class Main {
-    public static void main(String[] args) {
-        Actor actor = new AlphaBetaActor();
-        HumanActor humanActor = new HumanActor();
+class FxGameView {
+    private Stage window;
+    private Game gameModel;
+    private HumanActor.HumanActable humanActable;
 
-        ActorsPair actorsPair = new ActorsPair(actor, humanActor);
+    FxGameView(Stage window, Game gameModel) {
+        this.window = window;
+        this.gameModel = gameModel;
 
-        Game gameModel = new ReversiGame(actorsPair);
-        GameView view = new GraphicalGameView(gameModel);
-        GameController controller = new GraphicalGameController(gameModel);
-        view.setGameController(controller);
-        controller.setGameView(view);
-
-        humanActor.addHumanActable(controller);
-        view.show();
+        initializeWindow();
     }
+
+    private void initializeWindow() {
+        FXMLLoader fxmlLoader = new FXMLLoader(FxGameView.class.getResource("/layout/GameView.fxml"));
+
+        final ResourceBundle resourceBundle = ResourceBundle.getBundle("strings/Values");
+        fxmlLoader.setResources(resourceBundle);
+
+        try {
+            Parent parent = fxmlLoader.load();
+            FxGameViewController controller = fxmlLoader.getController();
+            controller.setGameModel(gameModel);
+            humanActable = controller;
+
+            Scene scene = new Scene(parent);
+            window.setScene(scene);
+
+            window.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    gameModel.endGame();
+                }
+            });
+
+            window.setResizable(false);
+
+            window.setTitle(resourceBundle.getString("ui.window.title"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void show() {
+        window.show();
+        gameModel.play();
+    }
+
+    HumanActor.HumanActable getHumanActable() {
+        return humanActable;
+    }
+
 }

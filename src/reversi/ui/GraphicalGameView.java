@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -77,36 +77,55 @@ import java.util.Observable;
 public class GraphicalGameView extends GameView {
     //The frame where the board will be displayed
     private final JFrame frame;
+    //The Squares of the GUI
+    private final JButton[][] squares;
+    //The board dimensions
+    private final int BOARD_WIDTH;
+    private final int BOARD_HEIGHT;
+    //the size of an square
+    private final Dimension DIMENSION = new Dimension(60, 60);
     //The panel where the board will be displayed
     private JPanel boardPanel;
     //The panel where the game information will be displayed
     private JPanel gameInformationPanel;
-
     //The layout
     private GridBagLayout gridBagLayout;
-
-    //The Squares of the GUI
-    private final JButton[][] squares;
-
     //The icon for the players
     private PlayerIcon ICON_WHITE_PLAYER;
     private PlayerIcon ICON_BLACK_PLAYER;
-
     //The labels
     private JLabel labelWhoseTurn;
     private JLabel labelWhitePlayer;
     private JLabel labelBlackPlayer;
     private JLabel labelWhitePlayerDisks;
     private JLabel labelBlackPlayerDisks;
-
-    //The board dimensions
-    private final int BOARD_WIDTH;
-    private final int BOARD_HEIGHT;
-    //the size of an square
-    private final Dimension DIMENSION = new Dimension(60, 60);
-
     //The input of the user
     private String userInput;
+    /**
+     * The action which should be performed when a square button is clicked
+     */
+    private final ActionListener userInputsMove = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //Get the button which is clicked
+            JButton button = ((JButton) e.getSource());
+
+            //Get the constraints
+            GridBagConstraints constraints = gridBagLayout.getConstraints(button);
+
+            //Calculate the board coordinates from the constraints
+            int xPos = constraints.gridx - 1;
+            int yPos = constraints.gridy - 1;
+
+            //Create the user input String
+            userInput = xPos + " " + yPos;
+            //disable input again
+            disableInput();
+
+            //notify the waiting thread that user input is done
+            resultsReady.signal();
+        }
+    };
 
     /**
      * Constructor to set up the GraphicalGameView
@@ -122,7 +141,7 @@ public class GraphicalGameView extends GameView {
 
         updatePlayerIcons();
 
-        //Crate the buttons
+        //create the buttons
         squares = new JButton[BOARD_WIDTH][BOARD_HEIGHT];
 
         //Initialize the panels
@@ -354,7 +373,7 @@ public class GraphicalGameView extends GameView {
                 //Disable input even when it would not make any sense
                 disableInput();
                 //controller to handle the game action
-                gameController.handleUserAction(GameController.GameAction.TAKEBACK);
+                gameController.handleUserAction(GameController.GameAction.TAKE_BACK);
             }
         });
 
@@ -598,32 +617,6 @@ public class GraphicalGameView extends GameView {
             labelWhitePlayer.setIcon(ICON_WHITE_PLAYER);
         }
     }
-
-    /**
-     * The action which should be performed when a square button is clicked
-     */
-    private final ActionListener userInputsMove = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //Get the button which is clicked
-            JButton button = ((JButton) e.getSource());
-
-            //Get the constraints
-            GridBagConstraints constraints = gridBagLayout.getConstraints(button);
-
-            //Calculate the board coordinates from the constraints
-            int xPos = constraints.gridx - 1;
-            int yPos = constraints.gridy - 1;
-
-            //Create the user input String
-            userInput = xPos + " " + yPos;
-            //disable input again
-            disableInput();
-
-            //notify the waiting thread that user input is done
-            resultsReady.signal();
-        }
-    };
 
     /**
      * Private class for displaying the players disks.

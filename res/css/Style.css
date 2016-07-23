@@ -28,22 +28,59 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package reversi.evaluation;
 
-import reversi.board.GamePosition;
+.titled-pane > .content {
+    -fx-padding: 5 5 5 5;
+}
 
-/**
- * This Evaluation evaluates the GamePosition based on the mobility of the players. In this Evaluation it is important
- * that it is possible to make as many moves as possible in the next move. It is just the number of moves that is
- * important here.
- *
- * @author Sascha Lutzenberger
- * @version 1.0 - 22. May 2016
- */
-public class MobilityEvaluation implements Evaluation {
-    @Override
-    public int evaluateGame(GamePosition gamePosition) {
-        //The most possible moves
-        return gamePosition.getBoard().getAllLegalMoves(gamePosition.getCurrentPlayer()).size();
-    }
+.player-toggle {
+    -fx-spacing: 10;
+}
+
+.grid-pane {
+    -fx-padding: 10 0 10 0;
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+}
+
+.button-row {
+    -fx-spacing: 10;
+    -fx-alignment: center-right;
+}
+
+.button-menu {
+    -fx-min-width: 120;
+    -fx-min-height: 30;
+}
+
+.circle {
+    -fx-stroke: white;
+    -fx-stroke-width: 4;
+
+    -fx-stroke-line-cap: butt;
+}
+
+.vbox-game-information {
+    -fx-padding: 10 10 10 10;
+    -fx-spacing: 5;
+}
+
+.board-grid-pane {
+    -fx-padding: 10 10 10 10;
+    -fx-hgap: 1;
+    -fx-vgap: 1;
+    -fx-background-color: #333333;
+}
+
+.board-squares {
+    -fx-min-height: 50;
+    -fx-min-width: 50;
+    -fx-padding: 5 5 5 5;
+    -fx-background-insets: 1 1 1 1;
+    -fx-background-color: #00AA00;
+}
+
+.board-squares:disabled {
+    -fx-background-color: green;
+    -fx-opacity: 1.0;
 }

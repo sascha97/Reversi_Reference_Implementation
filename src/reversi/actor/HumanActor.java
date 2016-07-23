@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -45,10 +45,36 @@ import java.util.ResourceBundle;
  */
 
 public class HumanActor extends Actor {
+    private final ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
     //The interface that allows the actor to request its input.
     private HumanActable humanActable;
+    private final Strategy humanStrategy = new Strategy() {
+        @Override
+        public GameMove move(GamePosition gamePosition) throws InterruptedException {
+            //This method requests the user to do the input
+            humanActable.requestUserInput();
 
-    private final ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
+            while (!gamePosition.getBoard().isMoveLegal(humanActable.getUserInput(), gamePosition.getCurrentPlayer())) {
+                humanActable.sendMessage(RES.getString("message.invalid.move"));
+                humanActable.requestUserInput();
+            }
+
+            return humanActable.getUserInput();
+        }
+    };
+
+    public HumanActor() {
+        super("Human Actor");
+    }
+
+    public void addHumanActable(HumanActable humanActable) {
+        this.humanActable = humanActable;
+    }
+
+    @Override
+    public Strategy getStrategy() {
+        return humanStrategy;
+    }
 
     /**
      * The interface that is required so that any HumanActor can request its input.
@@ -75,32 +101,4 @@ public class HumanActor extends Actor {
          */
         GameMove getUserInput();
     }
-
-    public HumanActor() {
-        super("Human Actor");
-    }
-
-    public void addHumanActable(HumanActable humanActable) {
-        this.humanActable = humanActable;
-    }
-
-    @Override
-    public Strategy getStrategy() {
-        return humanStrategy;
-    }
-
-    private final Strategy humanStrategy = new Strategy() {
-        @Override
-        public GameMove move(GamePosition gamePosition) throws InterruptedException {
-            //This method requests the user to do the input
-            humanActable.requestUserInput();
-
-            while (!gamePosition.getBoard().isMoveLegal(humanActable.getUserInput(), gamePosition.getCurrentPlayer())) {
-                humanActable.sendMessage(RES.getString("message.invalid.move"));
-                humanActable.requestUserInput();
-            }
-
-            return humanActable.getUserInput();
-        }
-    };
 }

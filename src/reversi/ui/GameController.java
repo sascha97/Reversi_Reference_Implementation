@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -42,25 +42,10 @@ import reversi.game.Game;
  */
 
 public abstract class GameController implements HumanActor.HumanActable {
-    /**
-     * Those are the following valid game actions of the program.
-     */
-    enum GameAction {
-        //Action to take back the last move of the human player
-        TAKEBACK,
-        //Action to resign the current game
-        RESIGN,
-        //Action to end the game (this will close the application)
-        END_GAME,
-        //Action to start a new game
-        NEW_GAME
-    }
-
     //The gameModel
     final Game gameModel;
     //The Game view
     private GameView gameView;
-
     //The last game move made by an user.
     private GameMove gameMove;
 
@@ -81,7 +66,7 @@ public abstract class GameController implements HumanActor.HumanActable {
     final void handleUserAction(GameAction action) {
         switch (action) {
             //Take back a move
-            case TAKEBACK:
+            case TAKE_BACK:
                 gameModel.takeBackMove();
                 break;
             //Start a new game
@@ -116,7 +101,7 @@ public abstract class GameController implements HumanActor.HumanActable {
     /**
      * This method starts the game by calling the Game.play() method.
      */
-    public final void play() {
+    final void play() {
         gameModel.play();
     }
 
@@ -165,4 +150,18 @@ public abstract class GameController implements HumanActor.HumanActable {
      * @return The GameMove that a user entered.
      */
     protected abstract GameMove convertInput(String userInput);
+
+    /**
+     * Those are the following valid game actions of the program.
+     */
+    enum GameAction {
+        //Action to take back the last move of the human player
+        TAKE_BACK,
+        //Action to resign the current game
+        RESIGN,
+        //Action to end the game (this will close the application)
+        END_GAME,
+        //Action to start a new game
+        NEW_GAME
+    }
 }

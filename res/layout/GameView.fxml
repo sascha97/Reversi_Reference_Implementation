@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2016. Sascha Lutzenberger. All rights reserved.
+  ~
+  ~ This file is part of the project "Reversi_Reference_Implementation"
+  ~
+  ~ Redistribution and use in source and binary forms, without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright
+  ~   notice, this list of conditions and the following disclaimer.
+  ~ - The author of this source code has given you the permission to use this
+  ~   source code.
+  ~ - Redistributions in binary form must reproduce the above copyright
+  ~   notice, this list of conditions and the following disclaimer in the
+  ~   documentation and/or other materials provided with the distribution.
+  ~ - The code is not used in commercial projects, except you got the permission
+  ~   for using the code in any commercial projects from the author.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+  ~ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+  ~ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+  ~ PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+  ~ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  ~ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+  ~ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+  ~ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  ~ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+  ~ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import java.net.URL?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="reversi.javafx.FxGameViewController">
+
+    <top>
+        <MenuBar useSystemMenuBar="true">
+            <Menu text="%ui.menu.bar.file">
+                <MenuItem text="%ui.menu.bar.file.settings" onAction="#showSettingsClicked"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <center>
+        <GridPane fx:id="boardPane" styleClass="board-grid-pane" alignment="CENTER"/>
+    </center>
+
+    <right>
+        <VBox alignment="CENTER_RIGHT" styleClass="vbox-game-information">
+            <TitledPane collapsible="false" text="%ui.label.current.player">
+                <Circle fx:id="currentPlayer" radius="25"/>
+            </TitledPane>
+
+            <TitledPane collapsible="false" text="%ui.label.status.player">
+                <GridPane alignment="CENTER" styleClass="grid-pane">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" minWidth="120"/>
+                        <ColumnConstraints halignment="CENTER" minWidth="120"/>
+                    </columnConstraints>
+
+                    <Circle fx:id="blackPlayer" radius="25"
+                            GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="labelBlackPlayerDisks"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Circle fx:id="whitePlayer" radius="25"
+                            GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="labelWhitePlayerDisks"
+                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                </GridPane>
+            </TitledPane>
+
+            <TitledPane collapsible="false" text="%ui.label.menu">
+                <GridPane styleClass="grid-pane">
+                    <Button text="%ui.label.resign" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                            styleClass="button-menu" onAction="#buttonResignClicked"/>
+                    <Button text="%ui.label.take.back" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                            styleClass="button-menu" onAction="#buttonTakeBackClicked"/>
+                    <Button text="%ui.label.new.game" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                            styleClass="button-menu" onAction="#buttonStartNewGameClicked"/>
+                    <Button text="%ui.label.exit" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                            styleClass="button-menu" onAction="#buttonEndGameClicked"/>
+                </GridPane>
+            </TitledPane>
+        </VBox>
+    </right>
+
+    <stylesheets>
+        <URL value="@/css/Style.css"/>
+    </stylesheets>
+</BorderPane>

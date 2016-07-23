@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -73,6 +73,17 @@ public final class Square {
     }
 
     /**
+     * This method returns the size of the board loaded from the configuration.
+     *
+     * @return The board size.
+     */
+    private static int getBoardSize() {
+        String sBoardSize = configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8");
+
+        return Integer.parseInt(sBoardSize);
+    }
+
+    /**
      * This method returns a name of the square (e.g. A1, A2, A3, A4...)
      *
      * @return The name of the Square like in chess (A1, A2...)
@@ -93,6 +104,18 @@ public final class Square {
      */
     public SquareState getSquareState() {
         return squareState;
+    }
+
+    /**
+     * This method allows it to modify the square state.
+     *
+     * @param squareState The SquareState to which the SquareState should be changed to.
+     */
+    void setSquareState(SquareState squareState) {
+        //If squareState exists set the square state to the new square state.
+        if (squareState != null) {
+            this.squareState = squareState;
+        }
     }
 
     /**
@@ -140,29 +163,6 @@ public final class Square {
      */
     public int getYPosition() {
         return this.yPosition;
-    }
-
-    /**
-     * This method allows it to modify the square state.
-     *
-     * @param squareState The SquareState to which the SquareState should be changed to.
-     */
-    void setSquareState(SquareState squareState) {
-        //If squareState exists set the square state to the new square state.
-        if (squareState != null) {
-            this.squareState = squareState;
-        }
-    }
-
-    /**
-     * This method returns the size of the board loaded from the configuration.
-     *
-     * @return The board size.
-     */
-    private static int getBoardSize() {
-        String sBoardSize = configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8");
-
-        return Integer.parseInt(sBoardSize);
     }
 
     /**

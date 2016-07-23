@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -31,6 +31,7 @@
 package reversi.ui;
 
 import reversi.game.Game;
+import reversi.game.ThreadEvent;
 
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -45,14 +46,12 @@ import java.util.ResourceBundle;
 public abstract class GameView implements Observer {
     //The game model
     final Game gameModel;
-    //The game controller
-    GameController gameController;
-
     //The resource bundle containing internationalized strings
     final ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
-
     //Used for syncing data across multiple threads
     final ThreadEvent resultsReady = new ThreadEvent();
+    //The game controller
+    GameController gameController;
 
     /**
      * The constructor to set up the game view
@@ -99,21 +98,5 @@ public abstract class GameView implements Observer {
      */
     public void show() {
         gameController.play();
-    }
-
-    protected static class ThreadEvent {
-        private final Object lock = new Object();
-
-        void await() throws InterruptedException {
-            synchronized (lock) {
-                lock.wait();
-            }
-        }
-
-        void signal() {
-            synchronized (lock) {
-                lock.notify();
-            }
-        }
     }
 }

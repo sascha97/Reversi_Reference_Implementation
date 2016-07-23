@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -80,44 +80,33 @@ public class MiniMaxActor extends ComputerActor {
             return new SearchNode(null, 0);
         }
 
-        //The best search node
-        SearchNode node;
         //get the opponent of the current player
         Player opponent = player.getOpponent();
 
         //If depth is reached stop searching and just return an evaluation value of the current position
-        if (depth == 0) {
-            node = new SearchNode(null, evaluation.evaluateGame(new GamePosition(board, player)));
-        } else {
-            //Get all legal moves of the current player
-            List<GameMove> legalMoves = board.getAllLegalMoves(player);
-            //When there are no available moves then check what to do next
-            if (legalMoves.isEmpty()) {
-                //If the opponent has legal moves then evaluate the opponents moves
-                if (board.hasAnyLegalMoves(opponent)) {
-                    node = searchImpl(opponent, board, depth - 1, evaluation).negated();
-                } else {
-                    //Else assume the game is done after this move and evaluate the "final" position.
-                    node = new SearchNode(null, finalValue(board, player));
-                }
-            } else {
-                //The first node is has the lowest possible evaluation value.
-                node = new SearchNode(null, Integer.MIN_VALUE);
+        if (depth == 0 || !board.hasAnyPlayerAnyLegalMoves()) {
+            return new SearchNode(null, evaluation.evaluateGame(new GamePosition(board, player)));
+        }
 
-                //Iterate over all possible moves and evaluate them
-                for (GameMove move : legalMoves) {
-                    //The GamePosition and Board after making the move
-                    GamePosition position = board.makeMove(move, player);
-                    Board cBoard = position.getBoard();
+        //Get all legal moves of the current player
+        List<GameMove> legalMoves = board.getAllLegalMoves(player);
 
-                    //The evaluation value of the current board
-                    int value = searchImpl(opponent, cBoard, depth - 1, evaluation).negated().getEvaluationValue();
+        //The best search node
+        //The first node has the lowest possible evaluation value.
+        SearchNode node = new SearchNode(null, Integer.MIN_VALUE);
 
-                    //Change SearchNode if the new node is a better move for the game.
-                    if (value > node.getEvaluationValue()) {
-                        node = new SearchNode(move, value);
-                    }
-                }
+        //Iterate over all possible moves and evaluate them
+        for (GameMove move : legalMoves) {
+            //The GamePosition and Board after making the move
+            GamePosition position = board.makeMove(move, player);
+            Board cBoard = position.getBoard();
+
+            //The evaluation value of the current board
+            int value = searchImpl(opponent, cBoard, depth - 1, evaluation).negated().getEvaluationValue();
+
+            //Change SearchNode if the new node is a better move for the game.
+            if (value > node.getEvaluationValue()) {
+                node = new SearchNode(move, value);
             }
         }
 

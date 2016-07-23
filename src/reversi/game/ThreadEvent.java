@@ -28,22 +28,27 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package reversi.evaluation;
 
-import reversi.board.GamePosition;
+package reversi.game;
 
 /**
- * This Evaluation evaluates the GamePosition based on the mobility of the players. In this Evaluation it is important
- * that it is possible to make as many moves as possible in the next move. It is just the number of moves that is
- * important here.
+ * This class is used for synchronizing data between various threads.
  *
  * @author Sascha Lutzenberger
- * @version 1.0 - 22. May 2016
+ * @version 1.0 - 23. July 2016
  */
-public class MobilityEvaluation implements Evaluation {
-    @Override
-    public int evaluateGame(GamePosition gamePosition) {
-        //The most possible moves
-        return gamePosition.getBoard().getAllLegalMoves(gamePosition.getCurrentPlayer()).size();
+public class ThreadEvent {
+    private final Object lock = new Object();
+
+    public void await() throws InterruptedException {
+        synchronized (lock) {
+            lock.wait();
+        }
+    }
+
+    public void signal() {
+        synchronized (lock) {
+            lock.notify();
+        }
     }
 }

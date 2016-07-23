@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -69,12 +69,12 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
- * This class is used for chaning the ReversiGameConfiguration in the User Interface
+ * This class is used for changing the ReversiGameConfiguration in the User Interface
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 06. July 2016
  */
-public class GraphicalGamePreferences {
+class GraphicalGamePreferences {
     //the configuration of the game
     private final ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
 
@@ -109,7 +109,7 @@ public class GraphicalGamePreferences {
     //the map containing all preferences of this preference dialog
     private Map<String, String> preferenceMap;
 
-    public GraphicalGamePreferences(JFrame parent) {
+    GraphicalGamePreferences(JFrame parent) {
         //Load all the values from the configuration to the map containing all preferences
         initializePreferencesMap();
 
@@ -160,7 +160,7 @@ public class GraphicalGamePreferences {
      *
      * @return true if the configuration has changed - false if the configuration has not changed
      */
-    public boolean hasConfigurationChanged() {
+    boolean hasConfigurationChanged() {
         return hasConfigurationChanged;
     }
 
@@ -205,7 +205,7 @@ public class GraphicalGamePreferences {
         int currentValue = Integer.parseInt(boardSize);
 
         //The values of the slider
-        int minValue = 6;
+        int minValue = 4;
         int maxValue = 12;
         //Set up a new JSlider
         final JSlider sliderBoardSize = new JSlider(minValue, maxValue, currentValue);

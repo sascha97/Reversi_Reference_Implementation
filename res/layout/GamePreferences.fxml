@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2016. Sascha Lutzenberger. All rights reserved.
+  ~
+  ~ This file is part of the project "Reversi_Reference_Implementation"
+  ~
+  ~ Redistribution and use in source and binary forms, without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ - Redistributions of source code must retain the above copyright
+  ~   notice, this list of conditions and the following disclaimer.
+  ~ - The author of this source code has given you the permission to use this
+  ~   source code.
+  ~ - Redistributions in binary form must reproduce the above copyright
+  ~   notice, this list of conditions and the following disclaimer in the
+  ~   documentation and/or other materials provided with the distribution.
+  ~ - The code is not used in commercial projects, except you got the permission
+  ~   for using the code in any commercial projects from the author.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+  ~ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+  ~ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+  ~ PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+  ~ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  ~ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+  ~ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+  ~ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  ~ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+  ~ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import java.net.URL?>
+<VBox xmlns:fx="http://javafx.com/fxml" styleClass="vbox-game-information"
+      fx:controller="reversi.javafx.FxGamePreferencesController">
+    <TitledPane collapsible="false" text="%ui.preferences.title.board">
+        <Slider fx:id="sliderBoardSize" min="4" max="12" minorTickCount="0" majorTickUnit="2" showTickLabels="true"
+                showTickMarks="true" snapToTicks="true"/>
+    </TitledPane>
+
+    <TitledPane collapsible="false" text="%ui.preferences.title.algorithm">
+        <Slider fx:id="sliderAlgorithmSearchDepth" min="2" max="16" minorTickCount="1" majorTickUnit="2"
+                showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
+    </TitledPane>
+
+    <TitledPane collapsible="false" text="%ui.preferences.title.change.color">
+        <GridPane styleClass="grid-pane">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER"/>
+                <ColumnConstraints halignment="CENTER"/>
+            </columnConstraints>
+
+            <Label text="%ui.preferences.player.black" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label text="%ui.preferences.player.white" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Circle fx:id="iconBlackPlayer" radius="25" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Circle fx:id="iconWhitePlayer" radius="25" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <ColorPicker fx:id="blackColorPicker" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <ColorPicker fx:id="whiteColorPicker" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+    </TitledPane>
+
+    <TitledPane collapsible="false" text="%ui.preferences.title.player">
+        <fx:define>
+            <ToggleGroup fx:id="player"/>
+        </fx:define>
+        <HBox styleClass="player-toggle" alignment="CENTER">
+            <RadioButton text="%ui.preferences.player.white" toggleGroup="$player" userData="white"/>
+            <RadioButton text="%ui.preferences.player.black" toggleGroup="$player" userData="black"/>
+        </HBox>
+    </TitledPane>
+
+    <HBox styleClass="button-row">
+        <Button text="%ui.preferences.cancel" cancelButton="true" onAction="#buttonCancelClicked"/>
+        <Button text="%ui.preferences.store" defaultButton="true" onAction="#buttonSaveConfigurationClicked"/>
+    </HBox>
+
+    <stylesheets>
+        <URL value="@/css/Style.css"/>
+    </stylesheets>
+</VBox>

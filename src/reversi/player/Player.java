@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -36,11 +36,12 @@ import reversi.board.SquareState;
  * An enumeration of all players of the game.
  *
  * @author Sascha Lutzenberger
- * @version 1.0 - 22. May 2016
+ * @version 1.1 - 23. July 2016
  */
 public enum Player {
     BLACK(SquareState.BLACK),
-    WHITE(SquareState.WHITE);
+    WHITE(SquareState.WHITE),
+    NONE(SquareState.EMPTY);
 
     //The SquareState of the player.
     private final SquareState squareState;
@@ -69,6 +70,10 @@ public enum Player {
      * @return The opponent of the player.
      */
     public Player getOpponent() {
+        if (this == Player.NONE) {
+            return Player.NONE;
+        }
+
         return (this == Player.BLACK) ? Player.WHITE : Player.BLACK;
     }
 }

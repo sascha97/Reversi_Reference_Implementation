@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -257,6 +257,9 @@ public abstract class Game extends Observable {
                 gameHasChanged();
 
                 try {
+                    //Thread wait for a second until next move will be made
+                    Thread.sleep(1000);
+
                     //Try to make the move
                     makeMove();
                 } catch (InterruptedException e) {

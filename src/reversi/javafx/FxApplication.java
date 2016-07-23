@@ -28,22 +28,40 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package reversi.evaluation;
 
-import reversi.board.GamePosition;
+package reversi.javafx;
+
+import reversi.actor.Actor;
+import reversi.actor.AlphaBetaActor;
+import reversi.actor.HumanActor;
+import reversi.game.ReversiGame;
+import reversi.player.ActorsPair;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
- * This Evaluation evaluates the GamePosition based on the mobility of the players. In this Evaluation it is important
- * that it is possible to make as many moves as possible in the next move. It is just the number of moves that is
- * important here.
+ * Add a description
  *
  * @author Sascha Lutzenberger
- * @version 1.0 - 22. May 2016
+ * @version 1.0 - 23. July 2016
  */
-public class MobilityEvaluation implements Evaluation {
+public class FxApplication extends Application {
+    public static void main(String[] args) {
+        Application.launch(FxApplication.class, args);
+    }
+
     @Override
-    public int evaluateGame(GamePosition gamePosition) {
-        //The most possible moves
-        return gamePosition.getBoard().getAllLegalMoves(gamePosition.getCurrentPlayer()).size();
+    public void start(Stage primaryStage) {
+        Actor actor = new AlphaBetaActor();
+        HumanActor humanActor = new HumanActor();
+
+        ActorsPair actorsPair = new ActorsPair(actor, humanActor);
+        ReversiGame game = new ReversiGame(actorsPair);
+
+        FxGameView view = new FxGameView(primaryStage, game);
+        humanActor.addHumanActable(view.getHumanActable());
+
+        view.show();
     }
 }

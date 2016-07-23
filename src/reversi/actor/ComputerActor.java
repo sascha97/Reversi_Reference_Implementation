@@ -14,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  * - The code is not used in commercial projects, except you got the permission
- *   for using the code in any commerical projects from the author.
+ *   for using the code in any commercial projects from the author.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -30,14 +30,11 @@
  */
 package reversi.actor;
 
-import reversi.board.Board;
 import reversi.board.GameMove;
 import reversi.board.GamePosition;
-import reversi.evaluation.CountDifferenceEvaluation;
 import reversi.evaluation.Evaluation;
-import reversi.evaluation.MobilityEvaluation;
+import reversi.evaluation.MixedEvaluation;
 import reversi.game.ReversiGameConfiguration;
-import reversi.player.Player;
 
 /**
  * This is the base class for any ComputerActor needed in the ReversiGame.
@@ -48,15 +45,13 @@ import reversi.player.Player;
  * @version 1.0 - 12. June 2016
  */
 public abstract class ComputerActor extends Actor {
-    //The depth of how many GamePositions will be evaluated.
-    private int DEPTH;
-
-    //How any GamePosition will be evaluated.
-    private final Evaluation evaluation;
-
     //Constants declaring the MAXIMAL and MINIMAL VALUE for WINNING OR LOOSING the ReversiGame.
     final int WINNING_VALUE = Integer.MAX_VALUE;
     final int LOOSING_VALUE = Integer.MIN_VALUE;
+    //How any GamePosition will be evaluated.
+    private final Evaluation evaluation;
+    //The depth of how many GamePositions will be evaluated.
+    private int DEPTH;
 
     ComputerActor(String name) {
         super(name);
@@ -64,7 +59,7 @@ public abstract class ComputerActor extends Actor {
         refreshActor();
 
         //Use the mobility evaluation for all computer actors.
-        evaluation = new CountDifferenceEvaluation();
+        evaluation = new MixedEvaluation();
     }
 
     @Override
@@ -89,32 +84,6 @@ public abstract class ComputerActor extends Actor {
                 return node.getGameMove();
             }
         };
-    }
-
-    /**
-     * The method will evaluate the Board if no move can be made any more.
-     * <p>
-     * The game will be won by any player who has more pieces on the board.
-     *
-     * @param board  The board that should be evaluated.
-     * @param player The player's view from which the board should be evaluated.
-     *
-     * @return An evaluation value of the board.
-     */
-    int finalValue(Board board, Player player) {
-        int result = 0;
-
-        //Check who has more pieces on the board, and then set if the player is winning or not.
-        switch (Integer.signum(board.countDifference(player))) {
-            case -1:
-                result = LOOSING_VALUE;
-                break;
-            case 1:
-                result = WINNING_VALUE;
-                break;
-        }
-
-        return result;
     }
 
     /**
