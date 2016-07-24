@@ -61,8 +61,6 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
@@ -71,38 +69,53 @@ import java.util.ResourceBundle;
  * @author Sascha Lutzenberger
  * @version 1.0 - 21. July 2016
  */
-public class FxGameViewController implements Initializable, Observer, HumanActor.HumanActable {
+public class FxGameViewController implements Initializable, HumanActor.HumanActable {
+    //The grid pane in which the board will be displayed
     @FXML
     private GridPane boardPane;
 
+    //The circle which is representing the current player icon
     @FXML
     private Circle currentPlayer;
 
+    //The circle which is representing the black player
     @FXML
     private Circle blackPlayer;
 
+    //The circle which is representing the white player
     @FXML
     private Circle whitePlayer;
 
+    //The label which holds the number of black disks
     @FXML
     private Label labelBlackPlayerDisks;
 
+    //The label which holds the number of white disks
     @FXML
     private Label labelWhitePlayerDisks;
 
+    //The buttons which can be clicked by the user
     private ButtonCircle[][] squares;
 
+    //The game which is displayed in this window
     private Game gameModel;
 
+    //The configuration where all the values are loaded from
     private ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
 
+    //A boolean flag indicating whether the animations should be played or not
     private boolean showAnimations;
 
+    //The resources
     private ResourceBundle resources;
 
+    //The last input of the user
     private String userInput;
 
+    //used for waiting for user input
     private ThreadEvent resultsReady = new ThreadEvent();
+
+    //this is called if user inputs move
     private EventHandler<MouseEvent> userInputsMove = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
@@ -126,30 +139,35 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
         initializeBoardPanel();
         initializeGameInformationPanel();
         updateShowAnimations();
-        updateShowLegalMoves();
     }
 
+    /**
+     * This method sets the GameModel to the controller
+     *
+     * @param gameModel The game model which should be added to the controller
+     */
     public void setGameModel(Game gameModel) {
         this.gameModel = gameModel;
-        gameModel.addObserver(this);
 
         disableInput();
     }
 
+    //Init the baord panel
     private void initializeBoardPanel() {
         int boardSize;
 
+        //Get the board size
         if (gameModel == null) {
             boardSize = Integer.parseInt(configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8"));
         } else {
             boardSize = gameModel.getGamePosition().getBoard().getBoardWidth();
         }
 
+        //Create the buttons
         squares = new ButtonCircle[boardSize][boardSize];
         for (int x = 0; x < boardSize; x++) {
             for (int y = 0; y < boardSize; y++) {
                 ButtonCircle button = new ButtonCircle();
-                button.getStyleClass().add("board-squares");
                 button.setOnMouseClicked(userInputsMove);
                 button.setUserData(x + " " + y);
 
@@ -158,6 +176,9 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
                 squares[x][y] = button;
             }
         }
+
+        //this adds the right style class to the button
+        updateShowLegalMoves();
     }
 
     private void initializeGameInformationPanel() {
@@ -234,8 +255,8 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
         }
     }
 
-    @Override
-    public void update(Observable observable, Object arg) {
+
+    void update() {
         //updates the board
         updateBoard();
         //updates the game information panel
@@ -430,6 +451,10 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
         ButtonCircle() {
             player = new Circle(16);
             player.getStyleClass().add("circle");
+
+            //Set Properties is not possible in JavaFX 2.2
+            setMinHeight(50);
+            setMinWidth(50);
         }
 
         void setPlayerIcon(Paint value) {
@@ -451,7 +476,6 @@ public class FxGameViewController implements Initializable, Observer, HumanActor
                     fadeTransition.play();
                     scaleTransition.play();
                 }
-
             } else {
                 if (showAnimations) {
                     Color start = (Color) player.getFill();

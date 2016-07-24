@@ -40,6 +40,7 @@ public class ReversiGameConfiguration extends GameConfiguration {
     //All the keys that exist in the ReversiGameConfiguration
     public static final String ALGORITHM_SEARCH_DEPTH = "algorithm.search.depth";
     public static final String BOARD_SIZE = "board.size";
+    public static final String COMPUTER_ALGORITHM = "computer.algorithm";
     public static final String HUMAN_PLAYER_COLOR = "human.player.color";
     public static final String PLAYER_BLACK_COLOR = "player.black.color";
     public static final String PLAYER_WHITE_COLOR = "player.white.color";

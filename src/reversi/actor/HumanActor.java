@@ -55,7 +55,7 @@ public class HumanActor extends Actor {
             humanActable.requestUserInput();
 
             while (!gamePosition.getBoard().isMoveLegal(humanActable.getUserInput(), gamePosition.getCurrentPlayer())) {
-                humanActable.sendMessage(RES.getString("message.invalid.move"));
+                humanActable.sendMessage(RES.getString("game.message.invalid.move"));
                 humanActable.requestUserInput();
             }
 

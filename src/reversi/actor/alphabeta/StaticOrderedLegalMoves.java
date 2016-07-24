@@ -59,6 +59,7 @@ public class StaticOrderedLegalMoves implements OrderedLegalMoves {
     private static final int WEIGHT_BOARD_DEFAULT = 3;
     //an int array representing the weights of the squares
     private int[][] SQUARE_WEIGHTS;
+
     /**
      * This comparator is used to compare two game moves with each other.
      */
@@ -76,9 +77,17 @@ public class StaticOrderedLegalMoves implements OrderedLegalMoves {
             return Integer.compare(weigh2, weigh1);
         }
     };
+
     //boolean flag to indicate if weights is already initialized
     private boolean weightsInitialized = false;
 
+    /**
+     * This method is used to get a sorted list of game moves
+     *
+     * @param board  The board from which the moves should be gotten
+     * @param player The player whose turn it is
+     * @return A sorted list containing all valid moves
+     */
     @Override
     public List<GameMove> getSortedList(Board board, Player player) {
         //if weights is not initialized initialize weight

@@ -95,18 +95,23 @@ public class MiniMaxActor extends ComputerActor {
         //The first node has the lowest possible evaluation value.
         SearchNode node = new SearchNode(null, Integer.MIN_VALUE);
 
-        //Iterate over all possible moves and evaluate them
-        for (GameMove move : legalMoves) {
-            //The GamePosition and Board after making the move
-            GamePosition position = board.makeMove(move, player);
-            Board cBoard = position.getBoard();
+        //if there are no empty moves evaluate opponent
+        if (legalMoves.isEmpty()) {
+            node = searchImpl(opponent, board, depth - 1, evaluation).negated();
+        } else {
+            //Iterate over all possible moves and evaluate them
+            for (GameMove move : legalMoves) {
+                //The GamePosition and Board after making the move
+                GamePosition position = board.makeMove(move, player);
+                Board cBoard = position.getBoard();
 
-            //The evaluation value of the current board
-            int value = searchImpl(opponent, cBoard, depth - 1, evaluation).negated().getEvaluationValue();
+                //The evaluation value of the current board
+                int value = searchImpl(opponent, cBoard, depth - 1, evaluation).negated().getEvaluationValue();
 
-            //Change SearchNode if the new node is a better move for the game.
-            if (value > node.getEvaluationValue()) {
-                node = new SearchNode(move, value);
+                //Change SearchNode if the new node is a better move for the game.
+                if (value > node.getEvaluationValue()) {
+                    node = new SearchNode(move, value);
+                }
             }
         }
 

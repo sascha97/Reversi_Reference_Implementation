@@ -99,13 +99,13 @@
             <TitledPane collapsible="false" text="%ui.title.menu">
                 <GridPane styleClass="grid-pane">
                     <Button text="%ui.button.label.resign" GridPane.columnIndex="0" GridPane.rowIndex="0"
-                            id="button-menu" onAction="#buttonResignClicked"/>
+                            onAction="#buttonResignClicked" minWidth="120" minHeight="30"/>
                     <Button text="%ui.button.label.take.back" GridPane.columnIndex="1" GridPane.rowIndex="0"
-                            id="button-menu" onAction="#buttonTakeBackClicked"/>
+                            onAction="#buttonTakeBackClicked" minWidth="120" minHeight="30"/>
                     <Button text="%ui.button.label.new.game" GridPane.columnIndex="0" GridPane.rowIndex="1"
-                            id="button-menu" onAction="#buttonStartNewGameClicked"/>
+                            onAction="#buttonStartNewGameClicked" minWidth="120" minHeight="30"/>
                     <Button text="%ui.button.label.exit" GridPane.columnIndex="1" GridPane.rowIndex="1"
-                            id="button-menu" onAction="#buttonEndGameClicked"/>
+                            onAction="#buttonEndGameClicked" minWidth="120" minHeight="30"/>
                 </GridPane>
             </TitledPane>
         </VBox>

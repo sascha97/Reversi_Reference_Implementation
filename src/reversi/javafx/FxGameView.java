@@ -31,6 +31,7 @@
 
 package reversi.javafx;
 
+import reversi.actor.Actor;
 import reversi.actor.HumanActor;
 import reversi.game.Game;
 
@@ -42,37 +43,40 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
- * Add a description
+ * This class is used for displaying the board to the user.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 23. July 2016
  */
-class FxGameView {
+class FxGameView implements Observer {
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("strings/Values");
+
     private Stage window;
     private Game gameModel;
-    private HumanActor.HumanActable humanActable;
+    private FxGameViewController controller;
 
-    FxGameView(Stage window, Game gameModel) {
+    FxGameView(Stage window, Game gameModel, Actor actor) {
         this.window = window;
         this.gameModel = gameModel;
 
-        initializeWindow();
+        gameModel.addObserver(this);
+
+        initializeWindow(actor);
     }
 
-    private void initializeWindow() {
+    private void initializeWindow(Actor actor) {
         FXMLLoader fxmlLoader = new FXMLLoader(FxGameView.class.getResource("/layout/GameView.fxml"));
-
-        final ResourceBundle resourceBundle = ResourceBundle.getBundle("strings/Values");
         fxmlLoader.setResources(resourceBundle);
 
         try {
             Parent parent = fxmlLoader.load();
-            FxGameViewController controller = fxmlLoader.getController();
+            controller = fxmlLoader.getController();
             controller.setGameModel(gameModel);
-            humanActable = controller;
 
             Scene scene = new Scene(parent);
             window.setScene(scene);
@@ -86,10 +90,19 @@ class FxGameView {
 
             window.setResizable(false);
 
-            window.setTitle(resourceBundle.getString("ui.window.title"));
+            setTitle(actor);
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof Actor) {
+            setTitle((Actor) arg);
+        } else {
+            controller.update();
         }
     }
 
@@ -99,7 +112,11 @@ class FxGameView {
     }
 
     HumanActor.HumanActable getHumanActable() {
-        return humanActable;
+        return controller;
+    }
+
+    private void setTitle(Actor actor) {
+        window.setTitle(resourceBundle.getString("ui.window.title") + " - " + actor.getName());
     }
 
 }

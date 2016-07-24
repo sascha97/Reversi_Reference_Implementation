@@ -29,27 +29,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package reversi.actor.alphabeta;
+package reversi.actor;
 
-import reversi.board.Board;
-import reversi.board.GameMove;
-import reversi.player.Player;
-
-import java.util.List;
+import java.util.ResourceBundle;
 
 /**
- * This interface is used so that custom ordered legal move searches can be implemented for the alpha beta algorithm
+ * This enum contains all computer actors implemented in this program
  *
  * @author Sascha Lutzenberger
- * @version 1.0 - 23. July 2016
+ * @version 1.0 - 24. July 2016
  */
-public interface OrderedLegalMoves {
+public enum ComputerActors {
+    ALPHA_BETA_ACTOR("computer.actor.alpha.beta", new AlphaBetaActor()),
+    ALPHA_BETA_ACTOR2("computer.actor.alpha.beta2", new AlphaBetaActor2()),
+    MINI_MAX_ACTOR("computer.actor.mini.max", new MiniMaxActor()),
+    RANDOM_ACTOR("computer.actor.random", new RandomActor());
+
+    private final static ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
+
+    private final String resKey;
+    private final ComputerActor computerActor;
+
+    ComputerActors(String resKey, ComputerActor computerActor) {
+        this.resKey = resKey;
+        this.computerActor = computerActor;
+    }
+
+    public static ComputerActor getComputerActor(String name) {
+        for (ComputerActors actor : ComputerActors.values()) {
+            if (actor.name().equals(name)) {
+                return actor.getComputerActor();
+            }
+        }
+
+        return null;
+    }
+
     /**
-     * This method is used to get a sorted list of game moves
+     * This method is used to get the computer actor from the enumeration
      *
-     * @param board  The board from which the moves should be gotten
-     * @param player The player whose turn it is
-     * @return A sorted list containing all valid moves
+     * @return The computer actor of the enum field.
      */
-    List<GameMove> getSortedList(Board board, Player player);
+    public ComputerActor getComputerActor() {
+        return computerActor;
+    }
+
+    /**
+     * Gets the name defined in the properties file for displaying it.
+     *
+     * @return The name of the actor
+     */
+    @Override
+    public String toString() {
+        return RES.getString(resKey);
+    }
 }

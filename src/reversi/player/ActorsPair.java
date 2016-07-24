@@ -103,7 +103,7 @@ public class ActorsPair {
      * @param player The player whose actor should be changed.
      * @param actor  The actor who should be mapped to the player.
      */
-    private void setActor(Player player, Actor actor) {
+    public void setActor(Player player, Actor actor) {
         actors.put(player, actor);
     }
 

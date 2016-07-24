@@ -41,6 +41,12 @@ import reversi.board.GamePosition;
  * @version 1.0 - 22. May 2016
  */
 public class MobilityEvaluation implements Evaluation {
+    /**
+     * This method evaluates a given GamePosition.
+     *
+     * @param gamePosition The GamePosition which should be evaluated.
+     * @return A number representing the value of the given GamePosition
+     */
     @Override
     public int evaluateGame(GamePosition gamePosition) {
         //The most possible moves

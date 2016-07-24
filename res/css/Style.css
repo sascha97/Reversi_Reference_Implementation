@@ -48,11 +48,6 @@
     -fx-alignment: center-right;
 }
 
-#button-menu {
-    -fx-min-width: 120;
-    -fx-min-height: 30;
-}
-
 .circle {
     -fx-stroke: white;
     -fx-stroke-width: 4;
@@ -75,8 +70,6 @@
 }
 
 .board-squares {
-    -fx-min-height: 50;
-    -fx-min-width: 50;
     -fx-padding: 5 5 5 5;
     -fx-background-insets: 1 1 1 1;
     -fx-background-color: #00AA00;
@@ -88,8 +81,6 @@
 }
 
 .board-squares-hidden {
-    -fx-min-height: 50;
-    -fx-min-width: 50;
     -fx-padding: 5 5 5 5;
     -fx-background-insets: 1 1 1 1;
     -fx-background-color: green;

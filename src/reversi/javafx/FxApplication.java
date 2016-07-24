@@ -32,16 +32,17 @@
 package reversi.javafx;
 
 import reversi.actor.Actor;
-import reversi.actor.AlphaBetaActor;
+import reversi.actor.ComputerActors;
 import reversi.actor.HumanActor;
 import reversi.game.ReversiGame;
+import reversi.game.ReversiGameConfiguration;
 import reversi.player.ActorsPair;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * Add a description
+ * This is the main class of the application.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 23. July 2016
@@ -53,13 +54,17 @@ public class FxApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Actor actor = new AlphaBetaActor();
+        ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
+        String computerPlayer = configuration.getProperty(ReversiGameConfiguration.COMPUTER_ALGORITHM, "MINI_MAX_ACTOR");
+
+        Actor actor = ComputerActors.getComputerActor(computerPlayer);
+
         HumanActor humanActor = new HumanActor();
 
         ActorsPair actorsPair = new ActorsPair(actor, humanActor);
         ReversiGame game = new ReversiGame(actorsPair);
 
-        FxGameView view = new FxGameView(primaryStage, game);
+        FxGameView view = new FxGameView(primaryStage, game, actor);
         humanActor.addHumanActable(view.getHumanActable());
 
         view.show();

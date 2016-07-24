@@ -41,7 +41,8 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 
 /**
- * Add a description
+ * This class represents the GamePreference window.
+ * Here all settings of the program can be changed.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 23. July 2016

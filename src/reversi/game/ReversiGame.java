@@ -30,6 +30,8 @@
  */
 package reversi.game;
 
+import reversi.actor.Actor;
+import reversi.actor.ComputerActors;
 import reversi.board.GamePosition;
 import reversi.board.ReversiBoard;
 import reversi.player.ActorsPair;
@@ -90,6 +92,16 @@ public class ReversiGame extends Game {
         }
     }
 
+    @Override
+    protected Actor getComputerActor() {
+        ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
+
+        //Get the name of the current computer actor
+        String computerActor = configuration.getProperty(ReversiGameConfiguration.COMPUTER_ALGORITHM, "MINI_MAX_ACTOR");
+
+        return ComputerActors.getComputerActor(computerActor);
+    }
+
     /**
      * This method handles the stuff that has to be done when a new game should be started.
      */
@@ -115,7 +127,7 @@ public class ReversiGame extends Game {
     @Override
     public void onTakeBackMove() {
         //Move can only be taken back if at least two moves have been made
-        if (this.gamePositionList.size() > 2) {
+        if (this.gamePositionList.size() > 1) {
             //Take multiple computer moves back
             while (gamePositionList.get(gamePositionList.size() - 2).getCurrentPlayer() != humanPlayer) {
                 //Remove computer move

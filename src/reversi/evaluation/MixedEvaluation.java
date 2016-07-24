@@ -51,6 +51,12 @@ import reversi.player.Player;
  * @version 1.0 - 23. July 2016
  */
 public class MixedEvaluation implements Evaluation {
+    /**
+     * This method evaluates a given GamePosition.
+     *
+     * @param gamePosition The GamePosition which should be evaluated.
+     * @return A number representing the value of the given GamePosition
+     */
     @Override
     public int evaluateGame(GamePosition gamePosition) {
         int difference = gamePosition.getBoard().countDifference(gamePosition.getCurrentPlayer());
@@ -58,9 +64,17 @@ public class MixedEvaluation implements Evaluation {
         int corner = countCornerSquares(gamePosition.getBoard(), gamePosition.getCurrentPlayer());
         int edge = countEdgeSquares(gamePosition.getBoard(), gamePosition.getCurrentPlayer());
 
-        return difference + mobility + corner * 468694 + edge;
+        return difference * 2 + mobility * 10 + corner * 100 + edge;
     }
 
+    /**
+     * This method counts the difference of corner squares. If the opponent has more corner squares than the own
+     * player a negative value will be returned.
+     *
+     * @param board  The board on which the corner squares should be counted.
+     * @param player The player in whose favour should be counted.
+     * @return The difference of corners taken by the players
+     */
     private int countCornerSquares(Board board, Player player) {
         int corners = 0;
 
@@ -71,6 +85,8 @@ public class MixedEvaluation implements Evaluation {
                 if (square.isCornerSquare()) {
                     if (square.getSquareState() == player.getSquareState()) {
                         corners++;
+                    } else if (square.getSquareState() == player.getOpponent().getSquareState()) {
+                        corners--;
                     }
                 }
             }
@@ -79,6 +95,14 @@ public class MixedEvaluation implements Evaluation {
         return corners;
     }
 
+    /**
+     * This method counts the difference of edge squares. If the opponent has more edge squares than the own
+     * player a negative value will be returned.
+     *
+     * @param board The board on which the corner squares should be counted.
+     * @param player The player in whose favour should be counted.
+     * @return The difference of edge squares taken by the players
+     */
     private int countEdgeSquares(Board board, Player player) {
         int edges = 0;
 
@@ -86,9 +110,12 @@ public class MixedEvaluation implements Evaluation {
             for (int y = 0; y < board.getBoardHeight(); y++) {
                 Square square = board.getSquare(x, y);
 
-                if (square.isEdgeSquare()) {
+                //count only edge squares
+                if (square.isEdgeSquare() && !square.isEdgeSquare()) {
                     if (square.getSquareState() == player.getSquareState()) {
                         edges++;
+                    } else if (square.getSquareState() == player.getOpponent().getSquareState()) {
+                        edges--;
                     }
                 }
             }

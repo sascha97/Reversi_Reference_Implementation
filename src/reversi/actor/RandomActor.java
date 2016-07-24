@@ -33,6 +33,7 @@ package reversi.actor;
 import reversi.board.Board;
 import reversi.board.GameMove;
 import reversi.board.GamePosition;
+import reversi.evaluation.Evaluation;
 import reversi.player.Player;
 
 import java.util.List;
@@ -46,35 +47,36 @@ import java.util.Random;
  * @author Sascha Lutzenberger
  * @version 1.0 - 12. June 2016
  */
-public class RandomActor extends Actor {
-    /*
-     * This Strategy returns a Random move.
-     */
-    private static final Strategy randomStrategy = new Strategy() {
-        private final Random random = new Random();
-
-        @Override
-        public GameMove move(GamePosition gamePosition) {
-            //Get the current Board and player
-            Board board = gamePosition.getBoard();
-            Player currentPlayer = gamePosition.getCurrentPlayer();
-
-            //Get all legal moves
-            List<GameMove> legalMoves = board.getAllLegalMoves(currentPlayer);
-            //An random number representing one of the elements present in the list
-            int r = random.nextInt(legalMoves.size());
-
-            //Returns a random possible move.
-            return legalMoves.get(r);
-        }
-    };
+public class RandomActor extends ComputerActor {
+    private final Random random = new Random();
 
     public RandomActor() {
         super("Random Actor");
     }
 
+    /**
+     * This method returns the best move that the ComputerActor can do assuming that the human player is also
+     * always playing with its best move.
+     *
+     * @param gamePosition The current GamePosition that has to be evaluated
+     * @param depth        How many moves the computer should evaluate to find its best move
+     * @param evaluation   The evaluation algorithm how a GamePosition is evaluated.
+     * @return The best move for the ComputerActor
+     */
     @Override
-    public Strategy getStrategy() {
-        return randomStrategy;
+    protected SearchNode search(GamePosition gamePosition, int depth, Evaluation evaluation) {
+        //Get the current Board and player
+        Board board = gamePosition.getBoard();
+        Player currentPlayer = gamePosition.getCurrentPlayer();
+
+        //Get all legal moves
+        List<GameMove> legalMoves = board.getAllLegalMoves(currentPlayer);
+        //An random number representing one of the elements present in the list
+        int r = random.nextInt(legalMoves.size());
+
+        //Returns a random possible move.
+        GameMove move = legalMoves.get(r);
+
+        return new SearchNode(move, 0);
     }
 }

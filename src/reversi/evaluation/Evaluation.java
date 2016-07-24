@@ -39,5 +39,11 @@ import reversi.board.GamePosition;
  * @version 1.0 - 22. May 2016
  */
 public interface Evaluation {
+    /**
+     * This method evaluates a given GamePosition.
+     *
+     * @param gamePosition The GamePosition which should be evaluated.
+     * @return A number representing the value of the given GamePosition
+     */
     int evaluateGame(GamePosition gamePosition);
 }

@@ -114,8 +114,21 @@ public abstract class Game extends Observable {
         //Wait for the current game to interrupt.
         interruptGameAndWaitForFinish();
 
+        //Determine human player and computer player
+        Player humanPlayer = determineHumanPlayer();
+        Player computerPlayer = humanPlayer.getOpponent();
+
+        Actor computerActor = getComputerActor();
+
         //Set up the human player if the configuration was changed after the game was loaded set the human player now
-        ACTORS_PAIR.setHumanPlayer(determineHumanPlayer());
+        ACTORS_PAIR.setHumanPlayer(humanPlayer);
+
+        if (computerActor != null) {
+            ACTORS_PAIR.setActor(computerPlayer, computerActor);
+
+            setChanged();
+            notifyObservers(computerActor);
+        }
 
         //refresh the actors
         ACTORS_PAIR.refreshAllActors();
@@ -161,6 +174,13 @@ public abstract class Game extends Observable {
      * is taken back.
      */
     protected abstract void onTakeBackMove();
+
+    /**
+     * This method returns the comptuer actor of the game
+     *
+     * @return the computer actor
+     */
+    protected abstract Actor getComputerActor();
 
     /**
      * This method has to be called if the game has changed and the Observers should be notified.
