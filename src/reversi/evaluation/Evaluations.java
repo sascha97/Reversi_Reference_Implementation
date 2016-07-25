@@ -28,49 +28,60 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package reversi.game;
+
+package reversi.evaluation;
+
+import java.util.ResourceBundle;
 
 /**
- * This is the configuration for a ReversiGame.
+ * This enum holds all available evaluations of the game.
  *
  * @author Sascha Lutzenberger
- * @version 1.0 - 21. May 2016
+ * @version 1.0 - 25. July 2016
  */
-public class ReversiGameConfiguration extends GameConfiguration {
-    //All the keys that exist in the ReversiGameConfiguration
-    public static final String ALGORITHM_SEARCH_DEPTH = "algorithm.search.depth";
-    public static final String BOARD_SIZE = "board.size";
-    public static final String COMPUTER_ALGORITHM = "computer.algorithm";
-    public static final String COMPUTER_EVALUATION = "computer.evaluation";
-    public static final String HUMAN_PLAYER_COLOR = "human.player.color";
-    public static final String PLAYER_BLACK_COLOR = "player.black.color";
-    public static final String PLAYER_WHITE_COLOR = "player.white.color";
-    public static final String USER_INTERFACE_SHOW_ANIMATIONS = "ui.show.animations";
-    public static final String USER_INTERFACE_SHOW_LEGAL_MOVES = "ui.show.legal.moves";
+public enum Evaluations {
+    CHANGING_EVALUATION("evaluation.changing", new ChangingEvaluation()),
+    COUNT_DIFFERENCE_EVALUATION("evaluation.count.difference", new CountDifferenceEvaluation()),
+    FRONT_TILE_EVALUATION("evaluation.front.tile", new FrontTileEvaluation()),
+    MIXED_EVALUATION("evaluation.mixed", new MixedEvaluation()),
+    POSITIONAL_EVALUATION("evaluation.positional", new PositionalEvaluation());
 
-    //Singleton design pattern should be applied here
-    private static ReversiGameConfiguration singleton;
+    private final static ResourceBundle RES = ResourceBundle.getBundle("strings/Values");
 
-    /**
-     * Constructor that creates the Configuration.
-     */
-    private ReversiGameConfiguration() {
-        //The file name of the properties file
-        super("reversi_game.properties");
+    private final String resKey;
+    private final Evaluation evaluation;
+
+    Evaluations(String resKey, Evaluation evaluation) {
+        this.resKey = resKey;
+        this.evaluation = evaluation;
+    }
+
+    public static Evaluation getEvaluation(String name) {
+        for (Evaluations evaluation : Evaluations.values()) {
+            if (evaluation.name().equals(name)) {
+                return evaluation.getEvaluation();
+            }
+        }
+
+        return null;
     }
 
     /**
-     * This method returns one single instance of the configuration only.
+     * This method is used to get the evaluation from the enumeration.
      *
-     * @return Returns the only instance of the configuration
+     * @return The evaluation of the enum field.
      */
-    public static ReversiGameConfiguration getInstance() {
-        //If there is no instance created create an instance
-        if (singleton == null) {
-            singleton = new ReversiGameConfiguration();
-        }
+    public Evaluation getEvaluation() {
+        return this.evaluation;
+    }
 
-        //Return the instance of the ReversiGameConfiguration.
-        return singleton;
+    /**
+     * Gets teh name defined in the properties file for displaying it.
+     *
+     * @return The name of the Evaluation
+     */
+    @Override
+    public String toString() {
+        return RES.getString(resKey);
     }
 }

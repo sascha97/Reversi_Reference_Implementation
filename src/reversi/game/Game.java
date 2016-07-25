@@ -176,7 +176,7 @@ public abstract class Game extends Observable {
     protected abstract void onTakeBackMove();
 
     /**
-     * This method returns the comptuer actor of the game
+     * This method returns the computer actor of the game
      *
      * @return the computer actor
      */

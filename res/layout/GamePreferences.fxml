@@ -129,6 +129,10 @@
                 <TitledPane text="%ui.preferences.tab.computer.title.opponent" collapsible="false">
                     <ChoiceBox fx:id="choiceBoxSelectComputerActor"/>
                 </TitledPane>
+
+                <TitledPane text="%ui.preferences.tab.computer.title.evaluation" collapsible="false">
+                    <ChoiceBox fx:id="choiceBoxSelectEvaluation"/>
+                </TitledPane>
             </VBox>
         </Tab>
     </TabPane>

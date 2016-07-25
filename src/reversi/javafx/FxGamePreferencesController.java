@@ -32,6 +32,7 @@
 package reversi.javafx;
 
 import reversi.actor.ComputerActors;
+import reversi.evaluation.Evaluations;
 import reversi.game.ReversiGameConfiguration;
 
 import javafx.beans.value.ChangeListener;
@@ -109,6 +110,10 @@ public class FxGamePreferencesController implements Initializable {
     @FXML
     private ChoiceBox<ComputerActors> choiceBoxSelectComputerActor;
 
+    //the choice box which allows it to change the actors evaluation method
+    @FXML
+    private ChoiceBox<Evaluations> choiceBoxSelectEvaluation;
+
     //The local map containing all configurations from the configuration
     private Map<String, String> preferenceMap;
 
@@ -184,6 +189,8 @@ public class FxGamePreferencesController implements Initializable {
         String algorithmDepth = configuration.getProperty(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, "5");
         String boardSize = configuration.getProperty(ReversiGameConfiguration.BOARD_SIZE, "8");
         String computerActor = configuration.getProperty(ReversiGameConfiguration.COMPUTER_ALGORITHM, "MINI_MAX");
+        String computerEvaluation = configuration.getProperty(
+                ReversiGameConfiguration.COMPUTER_EVALUATION, "MIXED_EVALUATION");
         String humanPlayerColor = configuration.getProperty(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, "black");
         String blackPlayerColor = configuration.getProperty(ReversiGameConfiguration.PLAYER_BLACK_COLOR, "0xFF0000");
         String whitePlayerColor = configuration.getProperty(ReversiGameConfiguration.PLAYER_WHITE_COLOR, "0xFFFF00");
@@ -195,6 +202,7 @@ public class FxGamePreferencesController implements Initializable {
         preferenceMap.put(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, algorithmDepth);
         preferenceMap.put(ReversiGameConfiguration.BOARD_SIZE, boardSize);
         preferenceMap.put(ReversiGameConfiguration.COMPUTER_ALGORITHM, computerActor);
+        preferenceMap.put(ReversiGameConfiguration.COMPUTER_EVALUATION, computerEvaluation);
         preferenceMap.put(ReversiGameConfiguration.HUMAN_PLAYER_COLOR, humanPlayerColor);
         preferenceMap.put(ReversiGameConfiguration.PLAYER_BLACK_COLOR, blackPlayerColor);
         preferenceMap.put(ReversiGameConfiguration.PLAYER_WHITE_COLOR, whitePlayerColor);
@@ -337,6 +345,27 @@ public class FxGamePreferencesController implements Initializable {
                 String computerActor = newValue.name();
 
                 updateConfiguration(ReversiGameConfiguration.COMPUTER_ALGORITHM, computerActor);
+            }
+        });
+
+        //add all items to the choice box
+        choiceBoxSelectEvaluation.getItems().setAll(Evaluations.values());
+
+        String evaluationName = preferenceMap.get(ReversiGameConfiguration.COMPUTER_EVALUATION);
+
+        for (Evaluations evaluation : choiceBoxSelectEvaluation.getItems()) {
+            if (evaluation.name().equals(evaluationName)) {
+                choiceBoxSelectEvaluation.setValue(evaluation);
+            }
+        }
+
+        //refresh the settings if actor is changed
+        choiceBoxSelectEvaluation.valueProperty().addListener(new ChangeListener<Evaluations>() {
+            @Override
+            public void changed(ObservableValue<? extends Evaluations> observable, Evaluations oldValue, Evaluations newValue) {
+                String evaluationName = newValue.name();
+
+                updateConfiguration(ReversiGameConfiguration.COMPUTER_EVALUATION, evaluationName);
             }
         });
     }

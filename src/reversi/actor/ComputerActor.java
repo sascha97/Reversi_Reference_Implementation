@@ -33,7 +33,7 @@ package reversi.actor;
 import reversi.board.GameMove;
 import reversi.board.GamePosition;
 import reversi.evaluation.Evaluation;
-import reversi.evaluation.MixedEvaluation;
+import reversi.evaluation.Evaluations;
 import reversi.game.ReversiGameConfiguration;
 
 /**
@@ -49,7 +49,7 @@ public abstract class ComputerActor extends Actor {
     final int WINNING_VALUE = Integer.MAX_VALUE;
     final int LOOSING_VALUE = Integer.MIN_VALUE;
     //How any GamePosition will be evaluated.
-    private final Evaluation evaluation;
+    private Evaluation evaluation;
     //The depth of how many GamePositions will be evaluated.
     private int DEPTH;
 
@@ -57,9 +57,6 @@ public abstract class ComputerActor extends Actor {
         super(name);
 
         refreshActor();
-
-        //Use the mobility evaluation for all computer actors.
-        evaluation = new MixedEvaluation();
     }
 
     @Override
@@ -67,6 +64,10 @@ public abstract class ComputerActor extends Actor {
         //Get the configuration and load the search depth from the config file.
         ReversiGameConfiguration config = ReversiGameConfiguration.getInstance();
         DEPTH = Integer.parseInt(config.getProperty(ReversiGameConfiguration.ALGORITHM_SEARCH_DEPTH, "5"));
+
+        //Load the evaluation from the properties
+        String evaluationName = config.getProperty(ReversiGameConfiguration.COMPUTER_EVALUATION, "MIXED_EVALUATION");
+        evaluation = Evaluations.getEvaluation(evaluationName);
     }
 
     /**

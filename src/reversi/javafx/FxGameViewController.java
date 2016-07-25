@@ -152,7 +152,7 @@ public class FxGameViewController implements Initializable, HumanActor.HumanActa
         disableInput();
     }
 
-    //Init the baord panel
+    //Init the board panel
     private void initializeBoardPanel() {
         int boardSize;
 
