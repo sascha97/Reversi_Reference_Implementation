@@ -98,42 +98,47 @@ public class AlphaBetaActor2 extends ComputerActor {
         //get the opponent of the current player
         Player opponent = player.getOpponent();
 
-        //If depth is reached stop searching and just return an evaluation value of the current position
-        if (depth == 0 || !board.hasAnyPlayerAnyLegalMoves()) {
-            return new SearchNode(null, evaluationNodeValue);
-        }
-
-        //Get all legal moves of the current player sorted
-        SortedMap<GameMove, GameMoveData> legalMoves = getSortedMoves(player, board, evaluation);
-
         //The best search node
         //The first node hat the lowest possible evaluation value.
-        SearchNode node = new SearchNode(null, alpha);
+        SearchNode node;
 
-        if (legalMoves.isEmpty()) {
-            node = searchImpl(opponent, board, -beta, -alpha, depth - 1, evaluation, -evaluationNodeValue).negated();
+        //If depth is reached stop searching and just return an evaluation value of the current position
+        if (depth == 0) {
+            node = new SearchNode(null, evaluationNodeValue);
         } else {
-            //Iterate over all possible moves and evaluate them
-            for (GameMove move : legalMoves.keySet()) {
-                //The GamePosition and the board after making the move
-                GamePosition gamePosition = legalMoves.get(move).getGamePosition();
-                Board cBoard = gamePosition.getBoard();
+            //Get all legal moves of the current player sorted
+            SortedMap<GameMove, GameMoveData> legalMoves = getSortedMoves(player, board, evaluation);
 
-                //The evaluation value of the current game position
-                int value = searchImpl(opponent, cBoard, -beta, -node.getEvaluationValue(), depth - 1, evaluation,
-                        -legalMoves.get(move).getEvaluationValue()).negated().getEvaluationValue();
-
-                //Change SearchNode if the new node is a better move for the game.
-                if (value > node.getEvaluationValue()) {
-                    node = new SearchNode(move, value);
+            if (legalMoves.isEmpty()) {
+                if (board.hasAnyLegalMoves(opponent)) {
+                    node = searchImpl(opponent, board, -beta, -alpha, depth - 1, evaluation, -evaluationNodeValue).negated();
+                } else {
+                    node = new SearchNode(null, finalValue(board, player));
                 }
-                //If the move can't be done because the opponent would prevent this from happening stop searching.
-                if (node.getEvaluationValue() >= beta) {
-                    break;
+            } else {
+                node = new SearchNode(legalMoves.firstKey(), alpha);
+
+                //Iterate over all possible moves and evaluate them
+                for (GameMove move : legalMoves.keySet()) {
+                    //The GamePosition and the board after making the move
+                    GamePosition gamePosition = legalMoves.get(move).getGamePosition();
+                    Board cBoard = gamePosition.getBoard();
+
+                    //The evaluation value of the current game position
+                    int value = searchImpl(opponent, cBoard, -beta, -node.getEvaluationValue(), depth - 1, evaluation,
+                            -legalMoves.get(move).getEvaluationValue()).negated().getEvaluationValue();
+
+                    //Change SearchNode if the new node is a better move for the game.
+                    if (value > node.getEvaluationValue()) {
+                        node = new SearchNode(move, value);
+                    }
+                    //If the move can't be done because the opponent would prevent this from happening stop searching.
+                    if (node.getEvaluationValue() >= beta) {
+                        break;
+                    }
                 }
             }
         }
-
 
         return node;
     }

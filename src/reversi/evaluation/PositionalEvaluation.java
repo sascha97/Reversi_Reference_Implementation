@@ -38,7 +38,7 @@ import reversi.player.Player;
 
 /**
  * This Evaluation evaluates the GamePosition based on the weights of squares. The weight of all squares that contain
- * player disks are added together afterwards the weight of the opponent is substracted.
+ * player disks are added together afterwards the weight of the opponent is subtracted.
  *
  * @author Sascha Lutzenberger
  * @version 1.0 - 25. July 2016

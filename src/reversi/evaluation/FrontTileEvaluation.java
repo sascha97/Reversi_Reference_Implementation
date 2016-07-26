@@ -37,7 +37,6 @@ import reversi.board.Square;
 import reversi.board.SquareState;
 import reversi.player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,7 +64,7 @@ public class FrontTileEvaluation implements Evaluation {
                 //Only applies when SquareState is EMPTY
                 if (square.getSquareState() == SquareState.EMPTY) {
                     //Get all neighbours of the square
-                    List<Square> neighbourList = getNeighbouringSquares(board, square);
+                    List<Square> neighbourList = BoardUtils.getNeighbourSquares(board, square);
 
                     //Check if the neighbour square is an own or opponents square
                     for (Square neighbour : neighbourList) {
@@ -83,44 +82,5 @@ public class FrontTileEvaluation implements Evaluation {
 
         //play minimizing on FrontTile disks
         return opponentFrontTileDisks - ownFrontTileDisks;
-    }
-
-    /**
-     * This method returns all neighbour squares of a square.
-     *
-     * @param board  The board from which the squares should be gotten.
-     * @param square The square whose neighbours are searched.
-     * @return A list containing all neighbour squares
-     */
-    private List<Square> getNeighbouringSquares(Board board, Square square) {
-        //the array list where all the neighbours should be stored
-        List<Square> neighbours = new ArrayList<>();
-
-        //The x and y position of the square
-        int xPos = square.getXPosition();
-        int yPos = square.getYPosition();
-
-        //Go in each direction of the square
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                int newX = xPos + dx;
-                int newY = yPos + dy;
-
-                //this is the original square continue without doing something
-                if (newX == xPos && newY == yPos) {
-                    continue;
-                }
-
-                //Get the square (returns null if square is not existent)
-                Square neighbour = board.getSquare(newX, newY);
-
-                //Add the square to the neighbours list
-                if (board.getSquare(newX, newY) != null) {
-                    neighbours.add(neighbour);
-                }
-            }
-        }
-
-        return neighbours;
     }
 }

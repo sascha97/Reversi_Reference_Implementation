@@ -30,11 +30,13 @@
  */
 package reversi.actor;
 
+import reversi.board.Board;
 import reversi.board.GameMove;
 import reversi.board.GamePosition;
 import reversi.evaluation.Evaluation;
 import reversi.evaluation.Evaluations;
 import reversi.game.ReversiGameConfiguration;
+import reversi.player.Player;
 
 /**
  * This is the base class for any ComputerActor needed in the ReversiGame.
@@ -46,8 +48,10 @@ import reversi.game.ReversiGameConfiguration;
  */
 public abstract class ComputerActor extends Actor {
     //Constants declaring the MAXIMAL and MINIMAL VALUE for WINNING OR LOOSING the ReversiGame.
-    final int WINNING_VALUE = Integer.MAX_VALUE;
-    final int LOOSING_VALUE = Integer.MIN_VALUE;
+    //THE MINIMAL AND MAXIMAL VALUE CAN NOT BE CHOSEN AS A FACTOR DUE TO EVALUATION ERRORS IN MINI_MAX
+    //THIS IS BECAUSE MINI_MAX USES THE MINIMUM INTEGER VALUE FOR ITS LOWEST VALUE SO IT CAN NOT BE USED HERE
+    final int WINNING_VALUE = Integer.MAX_VALUE - 1_000_000;
+    final int LOOSING_VALUE = Integer.MIN_VALUE + 1_000_000;
     //How any GamePosition will be evaluated.
     private Evaluation evaluation;
     //The depth of how many GamePositions will be evaluated.
@@ -85,6 +89,31 @@ public abstract class ComputerActor extends Actor {
                 return node.getGameMove();
             }
         };
+    }
+
+    /**
+     * The method will evaluate the Board if no move can be made any more.
+     * <p>
+     * The game will be won by any player who has more pieces on the board.
+     *
+     * @param board  The board that should be evaluated.
+     * @param player The player's view from which the board should be evaluated.
+     * @return An evaluation value of the board.
+     */
+    int finalValue(Board board, Player player) {
+        int result = 0;
+
+        //Check who has more pieces on the board, and then set if the player is winning or not.
+        switch (Integer.signum(board.countDifference(player))) {
+            case -1:
+                result = LOOSING_VALUE;
+                break;
+            case 1:
+                result = WINNING_VALUE;
+                break;
+        }
+
+        return result;
     }
 
     /**

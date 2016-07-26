@@ -92,6 +92,11 @@ public class ReversiGame extends Game {
         }
     }
 
+    /**
+     * This method gets the actor which should play the game against the human.
+     *
+     * @return The actor which will play against the human.
+     */
     @Override
     protected Actor getComputerActor() {
         ReversiGameConfiguration configuration = ReversiGameConfiguration.getInstance();
